@@ -1,6 +1,6 @@
 # YouJustSay · 你就说
 
-**极简 macOS 语音输入工具：按 Fn，说话，变成文字。** 支持 macOS 14 及以上。
+**极简 macOS 语音输入工具：按 Fn，说话，变成文字。** 支持 macOS 14 及以上；当前安装包适用于 Apple 芯片。
 
 专注语音输入，按需整理文字。自带 API 密钥，无需注册账号。
 
@@ -41,6 +41,12 @@
 
 <img src="docs/screenshots/text-cleanup.png" alt="文本整理：模型与整理风格" width="816" />
 
+## 下载与安装
+
+[下载最新正式版](https://github.com/nufegia/YouJustSay/releases/latest) · [完整安装说明](docs/INSTALL.zh-CN.md)
+
+下载 DMG 后，将应用拖入「应用程序」。本版未使用 Developer ID 签名与苹果公证；首次打开如被拦截，请前往「系统设置 → 隐私与安全性 → 仍要打开」确认。随后授权麦克风和辅助功能。
+
 ## 支持的服务商
 
 | 用途 | 服务商 | 配置 |
@@ -60,3 +66,17 @@
 ## 数据与隐私
 
 密钥存于本机钥匙串。音频和文字由所选服务处理，不保存文字历史，临时录音正常结束后删除。
+
+## 从源码构建
+
+需要 macOS 14 或更新版本，以及支持 Swift 6 和 `.icon` 图标编译的 Xcode 工具链（当前发行包使用 Xcode 27 构建）。
+
+```sh
+swift test
+./script/build_and_run.sh --release
+./script/package_release.sh
+```
+
+## 许可证
+
+采用 [MIT 许可证](LICENSE)。

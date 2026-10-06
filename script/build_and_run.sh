@@ -10,10 +10,12 @@ mkdir -p "$ROOT_DIR/dist"
 STAGING_DIR="$(mktemp -d "$ROOT_DIR/dist/.build-XXXXXX")"
 trap 'rm -rf "$STAGING_DIR"' EXIT
 APP_BUNDLE="$STAGING_DIR/$APP_NAME.app"
-case "$MODE" in run|--build|--debug|--logs|--telemetry|--verify) ;; *) echo "Usage: $0 [--build|--debug|--logs|--telemetry|--verify]"; exit 2;; esac
-if [ "$MODE" != "--build" ]; then pkill -x "$APP_NAME" >/dev/null 2>&1 || true; fi
-swift build
-BUILD_BINARY="$(swift build --show-bin-path)/$APP_NAME"
+case "$MODE" in run|--build|--release|--debug|--logs|--telemetry|--verify) ;; *) echo "Usage: $0 [--build|--release|--debug|--logs|--telemetry|--verify]"; exit 2;; esac
+if [ "$MODE" != "--build" ] && [ "$MODE" != "--release" ]; then pkill -x "$APP_NAME" >/dev/null 2>&1 || true; fi
+CONFIGURATION="debug"
+if [ "$MODE" = "--release" ]; then CONFIGURATION="release"; fi
+swift build -c "$CONFIGURATION"
+BUILD_BINARY="$(swift build -c "$CONFIGURATION" --show-bin-path)/$APP_NAME"
 mkdir -p "$APP_BUNDLE/Contents/MacOS" "$APP_BUNDLE/Contents/Resources"
 cp "$BUILD_BINARY" "$APP_BUNDLE/Contents/MacOS/$APP_NAME"
 cp Resources/Info.plist "$APP_BUNDLE/Contents/Info.plist"
@@ -32,7 +34,7 @@ if [ -d "$FINAL_BUNDLE" ]; then mv "$FINAL_BUNDLE" "$STAGING_DIR/previous.app"; 
 mv "$APP_BUNDLE" "$FINAL_BUNDLE"
 APP_BUNDLE="$FINAL_BUNDLE"
 case "$MODE" in
- --build) ;;
+ --build|--release) ;;
  --debug) lldb -- "$APP_BUNDLE/Contents/MacOS/$APP_NAME" ;;
  --logs) open -n "$APP_BUNDLE"; /usr/bin/log stream --info --style compact --predicate 'process == "YouJustSay"' ;;
  --telemetry) open -n "$APP_BUNDLE"; /usr/bin/log stream --info --style compact --predicate 'subsystem == "app.youjustsay.native"' ;;
