@@ -1,0 +1,48 @@
+{
+  "fill-specializations": [
+    {
+      "value": {
+        "solid": "srgb:0.95,0.97,0.97,1"
+      }
+    },
+    {
+      "appearance": "dark",
+      "value": {
+        "solid": "srgb:0.055,0.065,0.075,1"
+      }
+    }
+  ],
+  "groups": [
+    {
+      "layers": [
+        {
+          "name": "Generated speech bubble",
+          "glass": false,
+          "position": {
+            "scale": 0.78,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          },
+          "image-name": "VoiceSoft.png"
+        }
+      ],
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.08
+      },
+      "translucency": {
+        "enabled": false,
+        "value": 0
+      },
+      "specular": false,
+      "name": "Voice"
+    }
+  ],
+  "supported-platforms": {
+    "squares": [
+      "macOS"
+    ]
+  }
+}
