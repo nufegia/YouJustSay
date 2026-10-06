@@ -19,9 +19,9 @@
 
 ### 浮条状态
 
-录音、识别、整理、恢复、完成与上屏失败，浅色和深色一览。
+录音、识别、整理、恢复、完成、上屏失败与识别重试，浅色和深色一览。
 
-<img src="docs/screenshots/floating-bars.png" alt="浮条浅色与深色预览：录音、识别、整理、取消后恢复、完成及上屏失败" width="840" />
+<img src="docs/screenshots/floating-bars.png" alt="浮条浅色与深色预览：录音、识别、整理、取消后恢复、完成、上屏失败及识别重试" width="840" />
 
 ### 快捷键与上屏
 

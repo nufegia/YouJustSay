@@ -25,6 +25,8 @@ struct DictationBar: View {
         if let error = session.error {
             if session.completed && !session.lastResult.isEmpty {
                 insertionRecoveryBar(error: error)
+            } else if error == "empty" {
+                emptyRecoveryBar
             } else {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 8) {
@@ -104,17 +106,44 @@ struct DictationBar: View {
                 .accessibilityLabel(preferences.t(error))
             Button(preferences.t("copyResult")) { session.copyLastResult() }
                 .buttonStyle(FloatingBarButtonStyle(prominent: true))
-            Button {
-                dismiss()
-                openSettings()
-            } label: {
-                Image(systemName: "gearshape").font(.system(size: 12))
-            }
-            .buttonStyle(FloatingBarButtonStyle())
-            .help(preferences.t("settings"))
-            .accessibilityLabel(preferences.t("settings"))
+            settingsIconButton
             closeButton
         }
+    }
+
+    private var emptyRecoveryBar: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "exclamationmark.circle")
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+            Text(preferences.t("emptyShort"))
+                .lineLimit(1)
+                .help(preferences.t("empty"))
+                .accessibilityLabel(preferences.t("empty"))
+            if !session.original.isEmpty {
+                Button(preferences.t("retryPolish")) { session.polish(preferences) }
+                    .buttonStyle(FloatingBarButtonStyle(prominent: true))
+                Button(preferences.t("copyOriginal")) { session.deliverOriginal(preferences) }
+                    .buttonStyle(FloatingBarButtonStyle())
+            } else if session.hasAudio {
+                Button(preferences.t("retry")) { session.transcribe(preferences) }
+                    .buttonStyle(FloatingBarButtonStyle(prominent: true))
+            }
+            settingsIconButton
+            closeButton
+        }
+    }
+
+    private var settingsIconButton: some View {
+        Button {
+            dismiss()
+            openSettings()
+        } label: {
+            Image(systemName: "gearshape").font(.system(size: 12))
+        }
+        .buttonStyle(FloatingBarButtonStyle())
+        .help(preferences.t("settings"))
+        .accessibilityLabel(preferences.t("settings"))
     }
 
     private var settingsButton: some View {

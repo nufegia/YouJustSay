@@ -196,6 +196,7 @@ enum Language: String, CaseIterable, Identifiable, Codable {
         "missingSpeech": ["Set up Doubao Speech first.", "请先配置火山·豆包语音", "請先設定火山·豆包語音"],
         "missingLLM": ["Set up your text provider.", "请先配置文字整理服务", "請先設定文字整理服務"],
         "empty": ["No speech or text was returned. Please try again.", "未返回语音或文字内容，请重试。", "未傳回語音或文字內容，請重試。"],
+        "emptyShort": ["No content returned", "未返回内容", "未傳回內容"],
         "response": ["The provider returned an invalid response.", "服务商返回了无效响应。", "服務商傳回了無效回應。"],
         "truncated": ["The output was cut short. Try a shorter input.", "输出被截断，请缩短原文后重试。", "輸出遭截斷，請縮短原文後重試。"],
         "network": ["Connection failed. Check your network and try again.", "连接失败，请检查网络后重试。", "連線失敗，請檢查網路後重試。"],
