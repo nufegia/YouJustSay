@@ -55,3 +55,45 @@ if (typeof viewer.showModal === 'function') {
   viewer.addEventListener('click', event => { if (event.target === viewer) viewer.close(); });
   viewer.addEventListener('close', () => document.body.classList.remove('viewer-open'));
 }
+
+// A finite explanatory animation, not live recording or an AI result.
+const flowButtons = Array.from(document.querySelectorAll('[data-step]'));
+const flowImage = document.querySelector('#flow-bar');
+const flowStatus = document.querySelector('#flow-status');
+const flowOutput = document.querySelector('#flow-output');
+const cleanup = document.querySelector('#flow-cleanup');
+const play = document.querySelector('#play-flow');
+const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const rawWords = '嗯，突然想去海边，什么也不安排，就走走。';
+const cleanWords = '突然想去海边。什么也不安排，就走走。';
+let flowTimer;
+function selectStep(step) {
+  const states = ['recording', cleanup.checked ? 'polishing' : 'transcribing', 'completed'];
+  const labels = ['按 Fn，开始说', cleanup.checked ? '结束录音，按需整理口语' : '结束录音，识别你的原话', '文字输入到光标所在的位置'];
+  flowImage.src = `assets/bars/${states[step]}-light.png`;
+  flowImage.alt = ['应用真实录音浮条', cleanup.checked ? '应用真实整理浮条' : '应用真实识别浮条', '应用真实完成浮条'][step];
+  flowImage.removeAttribute('width');
+  flowStatus.textContent = labels[step];
+  flowOutput.textContent = step < 2 ? rawWords : (cleanup.checked ? cleanWords : rawWords);
+  flowOutput.classList.toggle('is-waiting', step < 2);
+  flowButtons.forEach((button,index) => button.setAttribute('aria-pressed',String(index === step)));
+}
+function stopFlow() { clearTimeout(flowTimer); play.textContent = '再看一次 ↗'; }
+flowButtons.forEach(button => button.addEventListener('click', () => { stopFlow(); selectStep(Number(button.dataset.step)); }));
+cleanup.addEventListener('change', () => { stopFlow(); selectStep(2); });
+play.addEventListener('click', () => {
+  stopFlow();
+  if (innerWidth <= 800) document.querySelector('#voice-story').scrollIntoView({behavior:motion.matches ? 'instant' : 'smooth',block:'center'});
+  if (motion.matches) { selectStep(2); return; }
+  selectStep(0);
+  play.textContent = '重新播放 ↗';
+  flowTimer = setTimeout(() => { selectStep(1); flowTimer = setTimeout(() => { selectStep(2); stopFlow(); },1400); },1700);
+});
+const themeToggle = document.querySelector('#bar-theme');
+themeToggle.addEventListener('click', () => {
+  const dark = themeToggle.getAttribute('aria-pressed') !== 'true';
+  themeToggle.setAttribute('aria-pressed',String(dark));
+  themeToggle.textContent = dark ? '查看浅色浮条' : '查看深色浮条';
+  document.querySelector('.native-states').classList.toggle('is-dark',dark);
+  document.querySelectorAll('[data-bar]').forEach(img => { img.src = `assets/bars/${img.dataset.bar}-${dark ? 'dark' : 'light'}.png`; });
+});

@@ -38,17 +38,24 @@
     <section class="hero wrap" aria-labelledby="hero-title">
       <div class="hero-copy">
         <h1 id="hero-title">想说的，<br><span>直接变成写好的。</span></h1>
-        <p class="lead">按一下 Fn，开口说话。<br class="small-break">让表达跟上思路。</p>
+        <p class="lead">给 Mac 加上语音输入。<br>按 Fn，说出想法，文字就到光标处。</p>
         <div class="hero-actions">
           <a class="button" href="https://github.com/nufegia/YouJustSay/releases/latest"><svg class="icon"><use href="#download"/></svg>下载 Mac 版</a>
-          <a class="button button-secondary" href="#preview">看看真实界面</a>
+          <button class="button button-secondary" id="play-flow" type="button">看它怎么输入 <span aria-hidden="true">↗</span></button>
         </div>
         <p class="compatibility">macOS 14+ · Apple 芯片 · 自备 API 密钥</p>
       </div>
-      <figure class="hero-screenshot">
-        <a href="assets/interaction-detail.jpg" class="screenshot-link" data-zoom="录音交互设置"><img src="assets/interaction-detail.jpg" alt="你就说实际录音交互设置：Fn 快捷键、按一下开始或结束、剪贴板自动粘贴" width="1120" height="620" fetchpriority="high"></a>
-        <figcaption>1.0.4 正式版实拍 · 录音交互 <span>点击放大</span></figcaption>
-      </figure>
+      <div class="voice-story" id="voice-story">
+        <div class="spoken-line"><span class="story-label">你随口说</span><p>“嗯，突然想去海边，<br>什么也不安排，就走走。”</p></div>
+        <div class="native-bar-stage"><img id="flow-bar" src="assets/bars/recording-light.png" alt="应用真实录音浮条" width="498" height="156"><span id="flow-status" role="status">按 Fn 说话，再按一次结束</span></div>
+        <div class="output-paper"><div class="output-heading"><span class="story-label">你正在输入的地方</span><label class="cleanup-toggle"><input type="checkbox" id="flow-cleanup" checked><span>整理口语</span></label></div><p id="flow-output">突然想去海边。什么也不安排，就走走。</p></div>
+        <div class="flow-steps" role="group" aria-label="输入过程示意">
+          <button type="button" data-step="0" aria-pressed="false"><span>01</span> 开口说</button>
+          <button type="button" data-step="1" aria-pressed="false"><span>02</span> 按需整理</button>
+          <button type="button" data-step="2" aria-pressed="false"><span>03</span> 文字就位</button>
+        </div>
+        <p class="story-note">真实浮条 · 输入过程示意，无需麦克风</p>
+      </div>
     </section>
     <section class="benefits wrap" aria-label="核心优势">
       <div><svg class="benefit-icon"><use href="#heart"/></svg><div><h2>免费开源</h2><p>代码公开，自由使用。</p></div></div>
@@ -57,6 +64,30 @@
     </section>
     <section class="features wrap section" id="why" aria-labelledby="why-title">
       <div class="section-heading"><h2 id="why-title">为表达减负，<br>给习惯留白。</h2><p>你已经有顺手的输入法。<br>现在，为它加上语音。</p></div>
+      <div class="value-stories">
+        <article class="habit-story">
+          <h3>输入法不用换，<br>多一种表达方式。</h3>
+          <p>熟悉的键盘输入照旧。想说话时，按 Fn 就好。</p>
+          <div class="input-equation" aria-label="原有输入法加上你就说，共用原有输入框"><div class="old-input"><span>五笔</span><span>RIME</span><span>拼音</span></div><b aria-hidden="true">＋</b><div class="voice-addition"><img src="assets/app-icon.png" width="42" height="42" alt=""><span>你就说</span></div></div>
+          <div class="shared-input">同一个输入框<span aria-hidden="true">│</span></div>
+          <small>关系示意 · 支持自动粘贴、直接键入或仅复制</small>
+        </article>
+        <article class="cost-story">
+          <h3>少一份订阅，<br>费用跟着用量走。</h3>
+          <p>应用免费开源。连接自己的服务，按需使用。</p>
+          <div class="cost-equation"><div><span class="cost-label">应用订阅费</span><strong><small>¥</small>0</strong></div><b aria-hidden="true">＋</b><div class="api-cost"><strong>API 用量</strong><span>语音识别</span><span>文字整理 · 可选</span></div></div>
+          <small>API 费用由服务商收取，随模型与用量变化。</small>
+        </article>
+      </div>
+      <div class="native-states">
+        <div class="native-heading"><div><h3>存在感很轻，状态很清楚。</h3><p>录音、识别、完成，用一条小浮条告诉你。</p></div><button id="bar-theme" type="button" aria-pressed="false">查看深色浮条</button></div>
+        <div class="native-state-list">
+          <figure><img data-bar="recording" src="assets/bars/recording-light.png" alt="录音状态原生浮条" loading="lazy"><figcaption>开口说话</figcaption></figure>
+          <figure><img data-bar="transcribing" src="assets/bars/transcribing-light.png" alt="识别状态原生浮条" loading="lazy"><figcaption>识别文字</figcaption></figure>
+          <figure><img data-bar="completed" src="assets/bars/completed-light.png" alt="完成状态原生浮条" loading="lazy"><figcaption>文字就位</figcaption></figure>
+        </div>
+        <p class="native-note">应用原生样式预览 · 录音波形为示例</p>
+      </div>
       <div class="screenshot-showcase" id="preview">
         <div class="showcase-copy">
           <h3>轻轻一按，<br>熟悉又顺手。</h3>
