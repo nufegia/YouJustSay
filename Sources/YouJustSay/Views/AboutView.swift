@@ -3,7 +3,6 @@ import SwiftUI
 struct AboutView: View {
     let preferences: Preferences
     let updater: AppUpdater
-    @State private var copied = false
 
     private var version: String {
         let info = Bundle.main.infoDictionary ?? [:]
@@ -28,28 +27,20 @@ struct AboutView: View {
                     }
                 }
                 detail("privacy", text: "privacyShort")
-                detail("updates", text: "updatesShort")
-                HStack {
-                    Button(preferences.t("checkForUpdates")) { updater.checkForUpdates() }
-                        .disabled(!updater.canCheckForUpdates)
-                    Spacer()
-                    Toggle(preferences.t("automaticallyCheckForUpdates"), isOn: Binding(
-                        get: { updater.automaticallyChecksForUpdates },
-                        set: { updater.setAutomaticallyChecksForUpdates($0) }
-                    )).toggleStyle(.switch)
-                }
-                HStack(spacing: 12) {
-                    Button(preferences.t("showApplication")) {
-                        NSWorkspace.shared.activateFileViewerSelecting([Bundle.main.bundleURL])
-                    }
-                    Button(preferences.t(copied ? "appInfoCopied" : "copyAppInfo")) {
-                        let info = "YouJustSay \(version)\nmacOS \(ProcessInfo.processInfo.operatingSystemVersionString)"
-                        NSPasteboard.general.clearContents()
-                        NSPasteboard.general.setString(info, forType: .string)
-                        copied = true
+                card("updates") {
+                    VStack(alignment: .leading, spacing: 16) {
+                        description("updatesShort")
+                        HStack {
+                            Button(preferences.t("checkForUpdates")) { updater.checkForUpdates() }
+                                .disabled(!updater.canCheckForUpdates)
+                            Spacer()
+                            Toggle(preferences.t("automaticallyCheckForUpdates"), isOn: Binding(
+                                get: { updater.automaticallyChecksForUpdates },
+                                set: { updater.setAutomaticallyChecksForUpdates($0) }
+                            )).toggleStyle(.switch)
+                        }
                     }
                 }
-                .controlSize(.large)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 30).padding(.bottom, 28)
@@ -57,10 +48,18 @@ struct AboutView: View {
     }
 
     private func detail(_ title: String, text: String) -> some View {
+        card(title) { description(text) }
+    }
+
+    private func description(_ key: String) -> some View {
+        Text(preferences.t(key)).font(.callout).foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private func card<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(preferences.t(title)).font(.headline)
-            Text(preferences.t(text)).font(.callout).foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
+            content()
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
