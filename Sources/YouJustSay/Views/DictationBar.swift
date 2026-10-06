@@ -23,37 +23,7 @@ struct DictationBar: View {
 
     @ViewBuilder private var content: some View {
         if let error = session.error {
-            if session.completed && !session.lastResult.isEmpty {
-                insertionRecoveryBar(error: error)
-            } else if error == "empty" {
-                emptyRecoveryBar
-            } else {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "exclamationmark.circle")
-                            .foregroundStyle(.secondary)
-                            .frame(width: 24)
-                            .accessibilityHidden(true)
-                        Text(preferences.t(error))
-                            .frame(maxWidth: 260, alignment: .leading)
-                            .fixedSize(horizontal: false, vertical: true)
-                        settingsButton
-                        closeButton
-                    }
-                    if !session.completed && (session.hasAudio || !session.original.isEmpty) {
-                        HStack(spacing: 6) {
-                            if !session.original.isEmpty {
-                                Button(preferences.t("retryPolish")) { session.polish(preferences) }
-                                Button(preferences.t("copyOriginal")) { session.deliverOriginal(preferences) }
-                            } else {
-                                Button(preferences.t("retry")) { session.transcribe(preferences) }
-                            }
-                        }
-                        .buttonStyle(FloatingBarButtonStyle(prominent: true))
-                        .padding(.leading, 32)
-                    }
-                }
-            }
+            errorBar(error: error)
         } else if session.phase == .recording {
             Button { session.toggle(preferences) } label: {
                 HStack(spacing: 3) {
@@ -95,36 +65,30 @@ struct DictationBar: View {
         }
     }
 
-    private func insertionRecoveryBar(error: String) -> some View {
-        HStack(spacing: 8) {
+    private func errorBar(error: String) -> some View {
+        let shortKey = error + "Short"
+        let messageKey = Language.strings[shortKey] != nil ? shortKey :
+            (Language.strings[error] != nil ? error : "serviceError")
+        return HStack(spacing: 8) {
             Image(systemName: "exclamationmark.circle")
                 .foregroundStyle(.secondary)
                 .accessibilityHidden(true)
-            Text(preferences.t(error == "insertionFailed" || error == "targetChanged" ? error + "Short" : error))
+            Text(preferences.t(messageKey))
                 .lineLimit(1)
+                .truncationMode(.tail)
+                .frame(maxWidth: 220, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
                 .help(preferences.t(error))
                 .accessibilityLabel(preferences.t(error))
-            Button(preferences.t("copyResult")) { session.copyLastResult() }
-                .buttonStyle(FloatingBarButtonStyle(prominent: true))
-            settingsIconButton
-            closeButton
-        }
-    }
-
-    private var emptyRecoveryBar: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "exclamationmark.circle")
-                .foregroundStyle(.secondary)
-                .accessibilityHidden(true)
-            Text(preferences.t("emptyShort"))
-                .lineLimit(1)
-                .help(preferences.t("empty"))
-                .accessibilityLabel(preferences.t("empty"))
-            if !session.original.isEmpty {
+            if session.completed && !session.lastResult.isEmpty {
+                Button(preferences.t("copyResult")) { session.copyLastResult() }
+                    .buttonStyle(FloatingBarButtonStyle(prominent: true))
+            } else if !session.original.isEmpty {
                 Button(preferences.t("retryPolish")) { session.polish(preferences) }
                     .buttonStyle(FloatingBarButtonStyle(prominent: true))
-                Button(preferences.t("copyOriginal")) { session.deliverOriginal(preferences) }
+                Button(preferences.t("copyOriginalShort")) { session.deliverOriginal(preferences) }
                     .buttonStyle(FloatingBarButtonStyle())
+                    .accessibilityLabel(preferences.t("copyOriginal"))
             } else if session.hasAudio {
                 Button(preferences.t("retry")) { session.transcribe(preferences) }
                     .buttonStyle(FloatingBarButtonStyle(prominent: true))
@@ -132,6 +96,7 @@ struct DictationBar: View {
             settingsIconButton
             closeButton
         }
+        .lineLimit(1)
     }
 
     private var settingsIconButton: some View {
@@ -144,15 +109,6 @@ struct DictationBar: View {
         .buttonStyle(FloatingBarButtonStyle())
         .help(preferences.t("settings"))
         .accessibilityLabel(preferences.t("settings"))
-    }
-
-    private var settingsButton: some View {
-        Button(preferences.t("settings")) {
-            dismiss()
-            openSettings()
-        }
-        .buttonStyle(FloatingBarButtonStyle(prominent: true))
-        .fixedSize()
     }
 
     private var closeButton: some View {
