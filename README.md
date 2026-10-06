@@ -41,10 +41,18 @@
 
 <img src="docs/screenshots/text-cleanup.png" alt="文本整理：模型与整理风格" width="816" />
 
+## 支持的服务商
+
+| 用途 | 服务商 | 配置 |
+| --- | --- | --- |
+| 语音识别 | 火山·豆包语音 | 录音文件极速版；API 密钥或 App ID + Access Token。 |
+| 文字整理 | 火山·方舟 | 方舟 API 密钥，内置豆包模型。 |
+| 文字整理 | [OpenAI](https://platform.openai.com/docs/api-reference/chat)、[深度求索（DeepSeek）](https://api-docs.deepseek.com/)等 OpenAI 兼容服务 | 选择「自定义」，填写 HTTPS 接口地址、模型和密钥，使用兼容的 Chat Completions 模型。 |
+
 ## 开始使用
 
 1. 打开 `YouJustSay.app`，授权麦克风和辅助功能。
-2. 填写豆包语音密钥（录音文件极速版）；启用整理时填写方舟密钥。点击「测试」验证。
+2. 填写豆包语音密钥；启用整理时配置方舟或自定义服务。点击「测试」验证。
 3. 按 Fn 说话，再按 Fn 结束，文字输入到所选位置。
 
 按 Esc 取消；识别或整理取消后，5 秒内可恢复。按 `⌃⌥⌘S` 打开设置。
