@@ -23,34 +23,33 @@ struct DictationBar: View {
 
     @ViewBuilder private var content: some View {
         if let error = session.error {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 8) {
-                    Image(systemName: "exclamationmark.circle")
-                        .foregroundStyle(.secondary)
-                        .frame(width: 24)
-                        .accessibilityHidden(true)
-                    Text(preferences.t(error))
-                        .frame(maxWidth: 260, alignment: .leading)
-                        .fixedSize(horizontal: false, vertical: true)
-                    settingsButton
-                    closeButton
-                }
-                if session.completed && !session.lastResult.isEmpty {
-                    Button(preferences.t("copyLast")) { session.copyLastResult() }
+            if session.completed && !session.lastResult.isEmpty {
+                insertionRecoveryBar(error: error)
+            } else {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.circle")
+                            .foregroundStyle(.secondary)
+                            .frame(width: 24)
+                            .accessibilityHidden(true)
+                        Text(preferences.t(error))
+                            .frame(maxWidth: 260, alignment: .leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                        settingsButton
+                        closeButton
+                    }
+                    if !session.completed && (session.hasAudio || !session.original.isEmpty) {
+                        HStack(spacing: 6) {
+                            if !session.original.isEmpty {
+                                Button(preferences.t("retryPolish")) { session.polish(preferences) }
+                                Button(preferences.t("copyOriginal")) { session.deliverOriginal(preferences) }
+                            } else {
+                                Button(preferences.t("retry")) { session.transcribe(preferences) }
+                            }
+                        }
                         .buttonStyle(FloatingBarButtonStyle(prominent: true))
                         .padding(.leading, 32)
-                }
-                if !session.completed && (session.hasAudio || !session.original.isEmpty) {
-                    HStack(spacing: 6) {
-                        if !session.original.isEmpty {
-                            Button(preferences.t("retryPolish")) { session.polish(preferences) }
-                            Button(preferences.t("copyOriginal")) { session.deliverOriginal(preferences) }
-                        } else {
-                            Button(preferences.t("retry")) { session.transcribe(preferences) }
-                        }
                     }
-                    .buttonStyle(FloatingBarButtonStyle(prominent: true))
-                    .padding(.leading, 32)
                 }
             }
         } else if session.phase == .recording {
@@ -91,6 +90,30 @@ struct DictationBar: View {
                 Text(preferences.t(session.phase.rawValue)).fixedSize()
                 closeButton
             }
+        }
+    }
+
+    private func insertionRecoveryBar(error: String) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: "exclamationmark.circle")
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+            Text(preferences.t(error == "insertionFailed" || error == "targetChanged" ? error + "Short" : error))
+                .lineLimit(1)
+                .help(preferences.t(error))
+                .accessibilityLabel(preferences.t(error))
+            Button(preferences.t("copyResult")) { session.copyLastResult() }
+                .buttonStyle(FloatingBarButtonStyle(prominent: true))
+            Button {
+                dismiss()
+                openSettings()
+            } label: {
+                Image(systemName: "gearshape").font(.system(size: 12))
+            }
+            .buttonStyle(FloatingBarButtonStyle())
+            .help(preferences.t("settings"))
+            .accessibilityLabel(preferences.t("settings"))
+            closeButton
         }
     }
 
