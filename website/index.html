@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#087f78">
+  <title>你就说 YouJustSay — 想说的，直接变成写好的。</title>
+  <meta name="description" content="给 Mac 加上轻巧的语音输入。按 Fn，开口说话，文字到输入框。免费开源，无应用订阅，保留你习惯的输入法。需自备 API 密钥，服务按量计费。">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:title" content="你就说 — 想说的，直接变成写好的。">
+  <meta property="og:description" content="免费开源的 macOS 语音输入工具。随口说，随心记。无应用订阅，需自备 API 密钥。">
+  <meta property="og:url" content="https://nufegia.github.io/YouJustSay/">
+  <meta property="og:image" content="https://nufegia.github.io/YouJustSay/assets/app-icon.png">
+  <link rel="canonical" href="https://nufegia.github.io/YouJustSay/">
+  <link rel="icon" type="image/png" href="assets/app-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <svg class="icon-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/></symbol>
+    <symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></symbol>
+    <symbol id="wallet" viewBox="0 0 24 24"><path d="M3 6h16a2 2 0 0 1 2 2v11H5a2 2 0 0 1-2-2V6Zm0 0V4h14v2m4 5h-6v4h6M3 2l19 20"/></symbol>
+    <symbol id="keyboard" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M7 15h10"/></symbol>
+  </defs></svg>
+  <header class="site-header wrap">
+    <a class="brand" href="./" aria-label="你就说首页"><img src="assets/app-icon.png" alt="" width="44" height="44"><span>你就说</span></a>
+    <nav aria-label="主导航">
+      <a class="nav-detail" href="#why">为什么选它</a><a class="nav-detail" href="#start">开始使用</a>
+      <a class="github-link" href="https://github.com/nufegia/YouJustSay">GitHub</a>
+      <a class="button button-small" href="https://github.com/nufegia/YouJustSay/releases/latest">下载 Mac 版</a>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <h1 id="hero-title">想说的，<br><span>直接变成写好的。</span></h1>
+        <p class="lead">按一下 Fn，开口说话。<br class="small-break">让表达跟上思路。</p>
+        <div class="hero-actions">
+          <a class="button" href="https://github.com/nufegia/YouJustSay/releases/latest"><svg class="icon"><use href="#download"/></svg>下载 Mac 版</a>
+          <a class="button button-secondary" href="#preview">看看真实界面</a>
+        </div>
+        <p class="compatibility">macOS 14+ · Apple 芯片 · 自备 API 密钥</p>
+      </div>
+      <figure class="hero-screenshot">
+        <a href="assets/interaction.png" class="screenshot-link" data-zoom="录音交互设置"><img src="assets/interaction.png" alt="你就说实际录音交互设置：Fn 快捷键、按一下开始或结束、剪贴板自动粘贴" width="1632" height="1240" fetchpriority="high"></a>
+        <figcaption>录音交互 · 应用截图 <span>点击查看大图</span></figcaption>
+      </figure>
+    </section>
+    <section class="benefits wrap" aria-label="核心优势">
+      <div><svg class="benefit-icon"><use href="#heart"/></svg><div><h2>免费开源</h2><p>代码公开，自由使用。</p></div></div>
+      <div><svg class="benefit-icon"><use href="#wallet"/></svg><div><h2>没有应用订阅</h2><p>自备 API 密钥，服务按量付费。</p></div></div>
+      <div><svg class="benefit-icon"><use href="#keyboard"/></svg><div><h2>保留原有输入法</h2><p>五笔、RIME，照常使用。</p></div></div>
+    </section>
+    <section class="features wrap section" id="why" aria-labelledby="why-title">
+      <div class="section-heading"><h2 id="why-title">为表达减负，<br>给习惯留白。</h2><p>你已经有顺手的输入法。<br>现在，为它加上语音。</p></div>
+      <div class="screenshot-showcase" id="preview">
+        <div class="showcase-copy">
+          <h3>轻轻一按，<br>熟悉又顺手。</h3>
+          <p>浅色与深色浮条，清楚呈现每一步。<br>文字怎么整理，服务怎么选，都由你决定。</p>
+          <div class="screenshot-tabs" role="tablist" aria-label="应用截图">
+            <button role="tab" id="tab-floating" aria-selected="true" aria-controls="screenshot-panel" data-shot="floating">浮条状态 <span aria-hidden="true">↗</span></button>
+            <button role="tab" id="tab-cleanup" aria-selected="false" aria-controls="screenshot-panel" tabindex="-1" data-shot="cleanup">文字整理 <span aria-hidden="true">↗</span></button>
+            <button role="tab" id="tab-models" aria-selected="false" aria-controls="screenshot-panel" tabindex="-1" data-shot="models">模型配置 <span aria-hidden="true">↗</span></button>
+          </div>
+          <p class="screenshot-note">以下均为应用现有截图，可点击放大。</p>
+        </div>
+        <figure id="screenshot-panel" role="tabpanel" aria-labelledby="tab-floating" tabindex="0">
+          <a class="screenshot-link" id="gallery-link" href="assets/floating-bars.png" data-zoom="浮条浅色与深色状态"><img id="gallery-image" src="assets/floating-bars.png" alt="实际浮条状态：录音、识别、整理、取消后恢复、完成、上屏失败和识别重试，包含浅色与深色外观" width="1680" height="1378" loading="lazy"></a>
+          <figcaption id="gallery-caption">浮条状态 · 浅色与深色</figcaption>
+        </figure>
+      </div>
+      <div class="feature-notes">
+        <article><h3>服务自己选，费用看用量。</h3><p>豆包识别语音，方舟或 OpenAI 兼容服务整理文字。应用不收订阅费，API 服务由你配置、按量付费。</p></article>
+        <article><h3>为 Mac 而做，随叫随到。</h3><p>Fn 开始或结束，Esc 取消。自动粘贴、直接键入或仅复制，选你顺手的方式。</p></article>
+      </div>
+    </section>
+    <section class="setup wrap section" id="start" aria-labelledby="start-title">
+      <h2 id="start-title">第一次配好，<br class="mobile-only">以后开口就好。</h2>
+      <ol class="steps">
+        <li><span class="step-number" aria-hidden="true">01</span><h3>下载并安装</h3><p>将应用拖入「应用程序」，按提示授权麦克风和辅助功能。</p><a href="https://github.com/nufegia/YouJustSay/blob/main/docs/INSTALL.zh-CN.md">查看安装指南 <span aria-hidden="true">↗</span></a></li>
+        <li><span class="step-number" aria-hidden="true">02</span><h3>配置你的密钥</h3><p>填入豆包语音密钥；需要文字整理时，再配置整理服务。点击「测试」验证。</p><a href="https://github.com/nufegia/YouJustSay#支持的服务商">了解支持的服务 <span aria-hidden="true">↗</span></a></li>
+        <li><span class="step-number" aria-hidden="true">03</span><h3>按 Fn，开始说</h3><p>按一下开始，再按一下结束；也能选择按住说话。让文字落在想输入的地方。</p></li>
+      </ol>
+    </section>
+    <section class="faq wrap section" aria-labelledby="faq-title">
+      <h2 id="faq-title">你可能还想知道</h2>
+      <div class="faq-list">
+        <details><summary>真的免费吗？</summary><p>你就说采用 MIT 开源许可证，应用免费，没有应用订阅费。语音识别和文字整理使用你自己的 API 密钥，所选服务商会按使用量计费；免费应用不代表 API 免费。</p></details>
+        <details><summary>需要配置什么？</summary><p>需要一台运行 macOS 14 或更新系统的 Apple 芯片 Mac，以及豆包语音服务的密钥。文字整理可选：启用时配置方舟，或自定义 OpenAI 兼容服务的地址、模型与密钥。无需注册你就说账号。</p></details>
+        <details><summary>语音和文字会发到哪里？</summary><p>音频发送至配置的语音识别服务；开启整理时，识别文本会发送至所选整理服务。密钥保存在本机钥匙串，应用不保存文字历史，临时录音正常结束后删除。这是云端识别工具，并非离线识别。</p></details>
+        <details><summary>首次打开被 macOS 拦截怎么办？</summary><p>当前安装包未使用 Developer ID 签名与苹果公证。确认从本项目 GitHub Releases 下载后，可到「系统设置 → 隐私与安全性 → 仍要打开」确认。详细步骤见<a href="https://github.com/nufegia/YouJustSay/blob/main/docs/INSTALL.zh-CN.md">安装指南</a>。</p></details>
+      </div>
+    </section>
+    <section class="closing" aria-labelledby="closing-title"><div class="wrap"><h2 id="closing-title">下一句话，试着说出来。</h2><a class="button button-white" href="https://github.com/nufegia/YouJustSay/releases/latest">下载 Mac 版<svg class="icon"><use href="#arrow"/></svg></a><p>macOS 14+ · Apple 芯片 · 自备 API 密钥</p></div></section>
+  </main>
+  <dialog id="image-viewer" aria-label="应用截图大图">
+    <div class="viewer-toolbar"><p id="viewer-title"></p><button id="close-viewer" type="button" autofocus>关闭 <span aria-hidden="true">×</span></button></div>
+    <img id="viewer-image" alt="">
+  </dialog>
+  <footer class="wrap"><a class="footer-brand" href="./">你就说 · YouJustSay</a><div><a href="https://github.com/nufegia/YouJustSay">GitHub</a><a href="https://github.com/nufegia/YouJustSay/blob/main/docs/INSTALL.zh-CN.md">安装指南</a><a href="https://github.com/nufegia/YouJustSay/blob/main/LICENSE">MIT License</a></div></footer>
+</body>
+</html>

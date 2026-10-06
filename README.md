@@ -1,19 +1,56 @@
-# YouJustSay · 你就说
+<p align="center">
+  <img src="Resources/AppIcon.icon/Assets/VoiceLight.png" alt="你就说应用图标" width="96" height="96" />
+</p>
 
-**极简 macOS 语音输入工具：按 Fn，说话，变成文字。** 支持 macOS 14 及以上；当前安装包适用于 Apple 芯片。
+<h1 align="center">你就说 · YouJustSay</h1>
 
-专注语音输入，按需整理文字。自带 API 密钥，无需注册账号。
+<p align="center"><strong>想说的，直接变成写好的。</strong></p>
+
+<p align="center">
+  按一下 Fn，开口说话，再按一下，文字就到输入框。<br />
+  随口说，随心记，让表达跟上思路。
+</p>
+
+<p align="center"><strong>免费开源 · 无应用订阅 · 保留你习惯的输入法</strong></p>
+
+<p align="center">
+  <a href="https://github.com/nufegia/YouJustSay/releases/latest"><strong>下载 Mac 版 →</strong></a>
+  &nbsp; · &nbsp;
+  <a href="https://nufegia.github.io/YouJustSay/">产品官网</a>
+  &nbsp; · &nbsp;
+  <a href="docs/INSTALL.zh-CN.md">安装指南</a>
+  &nbsp; · &nbsp;
+  <a href="#界面预览">看看界面</a>
+</p>
+
+<p align="center"><sub>macOS 14+ · 当前安装包适用于 Apple 芯片 · 自备 API 密钥</sub></p>
+
+| 不多交一份月租 | 不改变输入习惯 | 把口述输入做好 |
+| :---: | :---: | :---: |
+| 应用免费，自备密钥，API 按量付费 | 五笔、RIME 照用，Fn 随时唤起语音输入 | 原生 macOS 浮条，识别后按需整理文字 |
+
+**随口说出的念头，也能好好留下来。**
+
+> **你说：**“嗯，突然想去海边，什么也不安排，就走走。”<br />
+> **整理后：**“突然想去海边。什么也不安排，就走走。”
+
+<sub>以上为文字整理示例，实际结果随模型与整理风格而异；也可关闭整理，直接使用识别结果。</sub>
+
+应用免费开源，无需注册应用账号；语音识别与文字整理使用你自己的 API 密钥，费用由服务商按使用量收取。
 
 ## 为什么选择你就说
 
-**功能极简，按量付费，保留你习惯的输入法。**
+**如果你已经有顺手的输入法，只想给 Mac 加上语音输入，它就是为这种需求做的。**
 
-| 产品 | 为什么你该用你就说 |
+| 你在意的事 | 你就说的选择 |
 | --- | --- |
-| [闪电说](https://shandianshuo.cn/docs) | 只想说句话，用不着请个智能体。 |
-| [Typeless](https://www.typeless.com/pricing) | 语音输入，何必交月租？API 用多少，付多少。 |
-| [OpenTypeless](https://github.com/tover0314-w/opentypeless) | 功能做减法，审美不打折；专注 macOS，把口述输入做好。 |
-| [豆包输入法](https://ime.doubao.com/pc) | 五笔、RIME 照用；先开口，再选框，输入工具别改我的习惯。 |
+| **偶尔用，也不想每月付订阅费** | 应用免费开源，不收订阅费；识别和整理使用自己的 API 密钥，服务费用按量计算。 |
+| **输入法已经用顺手了** | 保留五笔、RIME 等现有输入法，需要时按 Fn 说话；支持自动粘贴、直接键入或仅复制。 |
+| **想让口语变清楚，又想保留自己的表达** | 基础整理、轻度润色、高度结构化三种风格可选，也能关闭整理，直接使用识别结果。 |
+| **想自己选择文字整理模型** | 内置方舟，也支持自定义 OpenAI 兼容整理接口；服务地址、模型和密钥由你配置。 |
+| **喜欢 Mac 上简单、顺手的工具** | 原生 macOS 界面，浅色／深色浮条；Fn 开始或结束、按住说话、Esc 取消，专注口述输入。 |
+
+首次使用需要配置豆包语音密钥；启用文字整理时，再配置整理服务。适合愿意花几分钟配置、希望自己掌握服务选择和用量的人。
 
 ## 界面预览
 
