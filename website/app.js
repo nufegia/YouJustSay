@@ -1,8 +1,8 @@
 'use strict';
 const screenshots = {
-  floating: { file: 'floating-bars.png', title: '浮条状态 · 浅色与深色', alt: '实际浮条状态：录音、识别、整理、取消后恢复、完成、上屏失败和识别重试，包含浅色与深色外观', width: 1680, height: 1378 },
-  cleanup: { file: 'text-cleanup.png', title: '文字整理 · 模型与整理风格', alt: '实际文字整理设置：启用文字润色、方舟服务、模型和轻度润色风格', width: 1632, height: 1240 },
-  models: { file: 'models.png', title: '模型配置 · 自带服务密钥', alt: '实际模型配置：豆包语音识别服务、API 密钥、识别语言和方舟文字整理服务', width: 1632, height: 1240 }
+  cleanup: { file: 'cleanup-detail.jpg', title: '文字整理 · 正式版实拍', alt: '正式版文字整理设置实拍：启用文字润色、方舟模型及轻度润色风格', width: 1120, height: 640 },
+  interaction: { file: 'interaction-detail.jpg', title: '录音交互 · 正式版实拍', alt: '正式版录音交互设置实拍：Fn 快捷键、按一下开始结束、剪贴板自动粘贴', width: 1120, height: 620 },
+  models: { file: 'models-detail.jpg', title: '语音识别 · 正式版实拍', alt: '正式版语音识别设置实拍：豆包语音、密钥类型、识别语言和中文输出偏好', width: 1120, height: 570 }
 };
 const tabs = Array.from(document.querySelectorAll('[data-shot]'));
 function selectScreenshot(tab) {

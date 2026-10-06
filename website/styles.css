@@ -167,7 +167,7 @@ footer{flex-direction:column;align-items:flex-start;gap:17px}
 *,*::before,*::after{animation:none!important;transition:none!important}
 }
 
-/* Product imagery is copied from the app's existing screenshots, without redrawing. */
+/* Fresh production-app captures; only empty margins/sidebar are cropped. */
 figure{margin:0}
 .hero-screenshot{min-width:0;background:var(--mint);border-radius:var(--radius);padding:26px 23px 18px}
 .screenshot-link{display:block;cursor:zoom-in}
@@ -183,7 +183,7 @@ figure{margin:0}
 .screenshot-tabs button[aria-selected="true"]{background:var(--teal);color:#fff;border-color:transparent;border-radius:8px}
 .showcase-copy .screenshot-note{font-size:12px;margin-top:22px}
 .screenshot-showcase figure{min-width:0}
-.screenshot-showcase img{object-fit:contain;aspect-ratio:1680/1378;background:#f2f0f0}
+.screenshot-showcase img{object-fit:contain;aspect-ratio:1120/640;background:#f7f7f7}
 .screenshot-showcase figcaption{color:var(--muted);font-size:12px;text-align:center;margin-top:12px}
 .viewer-open{overflow:hidden}
 #image-viewer{border:0;border-radius:14px;padding:0;width:min(1100px,calc(100% - 32px));max-height:92dvh;max-width:none;background:#f7f8f8;box-shadow:0 30px 100px #0004}
@@ -221,3 +221,7 @@ figure{margin:0}
 .viewer-toolbar button{font-size:12px;white-space:nowrap}
 }
 
+
+.hero-screenshot{padding:24px 20px 17px;background:#eaf6f3}.hero-screenshot img{border-radius:10px}.screenshot-showcase{grid-template-columns:.6fr 1.4fr;gap:38px}.showcase-copy h3{font-size:30px}.screenshot-showcase img{border-radius:10px}.screenshot-showcase figcaption{margin-top:16px}
+@media(max-width:800px){.screenshot-showcase{grid-template-columns:1fr;gap:26px}.hero-screenshot{padding:20px 16px 16px}}
+@media(max-width:480px){.hero-screenshot{padding:17px 12px 14px}.hero-screenshot figcaption{font-size:10px}.showcase-copy h3{font-size:25px}}
