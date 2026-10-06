@@ -4,6 +4,7 @@ struct SettingsView: View {
     @Bindable var preferences: Preferences
     @Bindable var login: LoginItem
     @Bindable var monitor: FnMonitor
+    let updater: AppUpdater
     let applyVisibility: () -> Void
     @State private var speechTest = APIConnectionTest()
     @State private var textTest = APIConnectionTest()
@@ -48,7 +49,7 @@ struct SettingsView: View {
                     case .interaction: interaction
                     case .models: models
                     case .permissions: permissions
-                    case .about: AboutView(preferences: preferences)
+                    case .about: AboutView(preferences: preferences, updater: updater)
                     }
                 }
                 .controlSize(.large)

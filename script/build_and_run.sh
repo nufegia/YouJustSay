@@ -21,6 +21,9 @@ cp "$BUILD_BINARY" "$APP_BUNDLE/Contents/MacOS/$APP_NAME"
 cp Resources/Info.plist "$APP_BUNDLE/Contents/Info.plist"
 cp -R Resources/*.lproj "$APP_BUNDLE/Contents/Resources/"
 cp -R "$(dirname "$BUILD_BINARY")/YouJustSay_YouJustSay.bundle" "$APP_BUNDLE/Contents/Resources/"
+mkdir -p "$APP_BUNDLE/Contents/Frameworks"
+SPARKLE_FRAMEWORK="$ROOT_DIR/.build/artifacts/sparkle/Sparkle/Sparkle.xcframework/macos-arm64_x86_64/Sparkle.framework"
+ditto "$SPARKLE_FRAMEWORK" "$APP_BUNDLE/Contents/Frameworks/Sparkle.framework"
 ICON_OUTPUT="$STAGING_DIR/icon-output"
 mkdir -p "$ICON_OUTPUT"
 xcrun actool "$ROOT_DIR/Resources/AppIcon.icon" --compile "$ICON_OUTPUT" --platform macosx --minimum-deployment-target 14.0 --app-icon AppIcon --output-partial-info-plist "$ROOT_DIR/.build/icon-info.plist" --output-format human-readable-text
@@ -28,6 +31,11 @@ cp "$ICON_OUTPUT/AppIcon.icns" "$ICON_OUTPUT/Assets.car" "$APP_BUNDLE/Contents/R
 /usr/libexec/PlistBuddy -c 'Add :CFBundleIconFile string AppIcon' "$APP_BUNDLE/Contents/Info.plist"
 /usr/libexec/PlistBuddy -c 'Add :CFBundleIconName string AppIcon' "$APP_BUNDLE/Contents/Info.plist"
 SIGNING_IDENTITY="${YOUJUSTSAY_SIGNING_IDENTITY:--}"
+# Sign nested executables from the inside out; preserve Sparkle's helper structure.
+SPARKLE_VERSION="$APP_BUNDLE/Contents/Frameworks/Sparkle.framework/Versions/B"
+for COMPONENT in "$SPARKLE_VERSION"/XPCServices/*.xpc "$SPARKLE_VERSION/Updater.app" "$SPARKLE_VERSION/Autoupdate" "$APP_BUNDLE/Contents/Frameworks/Sparkle.framework"; do
+    codesign --force --preserve-metadata=entitlements --sign "$SIGNING_IDENTITY" "$COMPONENT"
+done
 codesign --force --sign "$SIGNING_IDENTITY" "$APP_BUNDLE"
 codesign --verify --deep --strict "$APP_BUNDLE"
 if [ -d "$FINAL_BUNDLE" ]; then mv "$FINAL_BUNDLE" "$STAGING_DIR/previous.app"; fi

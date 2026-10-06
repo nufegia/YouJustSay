@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AboutView: View {
     let preferences: Preferences
+    let updater: AppUpdater
     @State private var copied = false
 
     private var version: String {
@@ -28,6 +29,15 @@ struct AboutView: View {
                 }
                 detail("privacy", text: "privacyShort")
                 detail("updates", text: "updatesShort")
+                HStack {
+                    Button(preferences.t("checkForUpdates")) { updater.checkForUpdates() }
+                        .disabled(!updater.canCheckForUpdates)
+                    Spacer()
+                    Toggle(preferences.t("automaticallyCheckForUpdates"), isOn: Binding(
+                        get: { updater.automaticallyChecksForUpdates },
+                        set: { updater.setAutomaticallyChecksForUpdates($0) }
+                    )).toggleStyle(.switch)
+                }
                 HStack(spacing: 12) {
                     Button(preferences.t("showApplication")) {
                         NSWorkspace.shared.activateFileViewerSelecting([Bundle.main.bundleURL])

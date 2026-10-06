@@ -2,11 +2,12 @@ import AppKit
 import SwiftUI
 import Carbon
 
-@MainActor final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
+@MainActor final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemValidation {
     let preferences = Preferences()
     let session = DictationSession()
     let login = LoginItem()
     let monitor = FnMonitor()
+    let updater = AppUpdater()
     private let shortcuts = GlobalShortcuts()
     private let permissionSetup = InitialPermissionSetup()
     private var settingsWindow: NSWindow?
@@ -14,6 +15,7 @@ import Carbon
     private var statusItem: NSStatusItem?
     private var panelBottomCenter = NSPoint.zero
     func applicationDidFinishLaunching(_ notification: Notification) {
+        updater.start()
         applyVisibility()
         monitor.shortcut = preferences.shortcut
         monitor.onTrigger = { [weak self] down in
@@ -106,6 +108,7 @@ import Carbon
         menu.addItem(.separator())
         let settings = addMenuItem(menu, title: preferences.t("settings"), action: #selector(openSettings))
         hideSettingsIcon(settings)
+        addMenuItem(menu, title: preferences.t("checkForUpdates"), action: #selector(checkForUpdates), enabled: updater.canCheckForUpdates)
         addMenuItem(menu, title: preferences.t("quit"), action: #selector(quitApp))
     }
     @discardableResult private func addMenuItem(_ menu: NSMenu, title: String, action: Selector, enabled: Bool = true) -> NSMenuItem {
@@ -135,6 +138,8 @@ import Carbon
         let appMenu = NSMenu(title: preferences.t("app"))
         let about = NSMenuItem(title: preferences.t("about"), action: #selector(openAbout), keyEquivalent: "")
         about.target = self; appMenu.addItem(about)
+        let updates = NSMenuItem(title: preferences.t("checkForUpdates"), action: #selector(checkForUpdates), keyEquivalent: "")
+        updates.target = self; appMenu.addItem(updates)
         appMenu.addItem(.separator())
         let settings = NSMenuItem(title: preferences.t("settings"), action: #selector(openSettings), keyEquivalent: ",")
         settings.target = self; hideSettingsIcon(settings); appMenu.addItem(settings)
@@ -151,12 +156,16 @@ import Carbon
         NSApp.mainMenu = menu
     }
     @objc private func openAbout() { showSettings(); preferences.settingsTab = .about }
+    @objc private func checkForUpdates() { if updater.canCheckForUpdates { updater.checkForUpdates() } }
+    func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        menuItem.action != #selector(checkForUpdates) || updater.canCheckForUpdates
+    }
     @objc private func openSettings() { showSettings() }
     @objc private func quitApp() { NSApp.terminate(nil) }
     func showSettings() {
         login.refresh()
         if settingsWindow == nil {
-            let view = SettingsView(preferences: preferences, login: login, monitor: monitor, applyVisibility: { [weak self] in self?.applyVisibility() })
+            let view = SettingsView(preferences: preferences, login: login, monitor: monitor, updater: updater, applyVisibility: { [weak self] in self?.applyVisibility() })
             let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 816, height: preferences.settingsTab.windowHeight), styleMask: [.titled, .closable, .miniaturizable, .fullSizeContentView], backing: .buffered, defer: false)
             window.title = "\(preferences.t("app")) · \(preferences.t("settings"))"
             window.titlebarAppearsTransparent = true
