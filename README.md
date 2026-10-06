@@ -51,8 +51,8 @@
 
 | 用途 | 服务商 | 配置 |
 | --- | --- | --- |
-| 语音识别 | 火山·豆包语音 | 录音文件极速版；API 密钥或 App ID + Access Token。 |
-| 文字整理 | 火山·方舟 | 方舟 API 密钥，内置豆包模型。 |
+| 语音识别 | [火山·豆包语音](https://www.volcengine.com/docs/6561/1631584?lang=zh) | 录音文件极速版；API 密钥或 App ID + Access Token。 |
+| 文字整理 | [火山·方舟](https://docs.volcengine.com/docs/ark?lang=zh) | 方舟 API 密钥，内置豆包模型。 |
 | 文字整理 | [OpenAI](https://platform.openai.com/docs/api-reference/chat)、[深度求索（DeepSeek）](https://api-docs.deepseek.com/)等 OpenAI 兼容服务 | 选择「自定义」，填写 HTTPS 接口地址、模型和密钥，使用兼容的 Chat Completions 模型。 |
 
 ## 开始使用
