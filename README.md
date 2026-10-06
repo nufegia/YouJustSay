@@ -8,11 +8,11 @@
 
 **功能极简，按量付费，保留你习惯的输入法。**
 
-| 产品 | 区别 | 你就说的优势 |
+| 产品 | 劣势 | 你就说的优势 |
 | --- | --- | --- |
 | [闪电说](https://shandianshuo.cn/docs) | 加入智能体、记忆和技能，功能繁多。 | 只做语音识别、文字整理和输入。 |
 | [Typeless](https://www.typeless.com/pricing) | 免费版有限额；Pro 月付 US$30，年付折合 US$12/月。 | 无应用订阅费，API 按用量付费。 |
-| [OpenTypeless](https://github.com/tover0314-w/opentypeless) | 开源跨平台，支持问答、翻译、选中文字改写和场景配置。 | 专注 macOS 口述输入，功能与设置更精简。 |
+| [OpenTypeless](https://github.com/tover0314-w/opentypeless) | 界面不够美观，功能庞杂、不够极简；支持范围广，但不够聚焦。 | 专注 macOS 口述输入，界面简洁，功能精简。 |
 | [豆包输入法](https://ime.doubao.com/pc) | 需先聚焦文本框，并使用豆包输入法。 | 可先说话、再选输入位置；保留五笔、RIME 等原有输入法，支持多个输入法切换。 |
 
 ## 可以用来做什么
