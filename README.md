@@ -8,12 +8,12 @@
 
 **功能极简，按量付费，保留你习惯的输入法。**
 
-| 产品 | 一句话说明为什么应该转到（你就说） |
+| 产品 | 为什么你该用你就说 |
 | --- | --- |
-| [闪电说](https://shandianshuo.cn/docs) | 不需要智能体、记忆和技能，只想把话变成文字，就选功能精简的你就说。 |
-| [Typeless](https://www.typeless.com/pricing) | 不想为 Pro 每月支付 US$30（年付折合 US$12/月），就用无应用订阅费、API 按量付费的你就说。 |
-| [OpenTypeless](https://github.com/tover0314-w/opentypeless) | 觉得界面不够美观、功能庞杂且不聚焦，就选界面简洁、专注 macOS 口述输入的你就说。 |
-| [豆包输入法](https://ime.doubao.com/pc) | 不想先聚焦文本框或切换到豆包输入法，就用可先说话、再选位置，并保留五笔、RIME 等输入法的你就说。 |
+| [闪电说](https://shandianshuo.cn/docs) | 只想说句话，用不着请个智能体。 |
+| [Typeless](https://www.typeless.com/pricing) | 语音输入，何必交月租？API 用多少，付多少。 |
+| [OpenTypeless](https://github.com/tover0314-w/opentypeless) | 功能做减法，审美不打折；专注 macOS，把口述输入做好。 |
+| [豆包输入法](https://ime.doubao.com/pc) | 五笔、RIME 照用；先开口，再选框，输入工具别改我的习惯。 |
 
 ## 可以用来做什么
 
