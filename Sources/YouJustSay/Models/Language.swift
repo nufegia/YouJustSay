@@ -22,7 +22,7 @@ enum Language: String, CaseIterable, Identifiable, Codable {
         "settingsAccessHint": ["Open settings anytime with ⌃⌥⌘S.", "随时按 ⌃⌥⌘S 打开设置。", "隨時按 ⌃⌥⌘S 開啟設定。"],
         "basicShortHint": ["Remove fillers and repetitions; keep your wording.", "去口水词、重复，保留原话。", "去贅詞、重複，保留原話。"],
         "cleanShortHint": ["Correct grammar and lightly polish wording.", "修正语病，轻微润色。", "修正語病，輕微潤飾。"],
-        "structuredShortHint": ["Organize text into paragraphs and lists as needed.", "按需分段、归类和列点。", "按需分段、歸類和列點。"],
+        "structuredShortHint": ["Remove fillers, rewrite clearly and organize ideas as needed.", "去口水词、书面化表达，按需分段列点。", "去贅詞、書面化表達，按需分段列點。"],
         "privacyShort": ["Keys stay in Keychain. Audio and text go to your selected services. No text history is saved.", "密钥存于钥匙串；音频和文字由所选服务处理。不保存文字历史。", "金鑰存於鑰匙圈；音訊和文字由所選服務處理。不儲存文字歷史。"],
         "updatesShort": ["Check GitHub Releases for new versions. Download and install signed updates after confirmation.", "通过 GitHub Releases 检查新版本，确认后下载并安装经过更新签名验证的版本。", "透過 GitHub Releases 檢查新版本，確認後下載並安裝經過更新簽章驗證的版本。"],
         "checkForUpdates": ["Check for Updates…", "检查更新…", "檢查更新…"],
@@ -50,7 +50,7 @@ enum Language: String, CaseIterable, Identifiable, Codable {
         "basic": ["Basic cleanup", "基础整理", "基礎整理"],
         "basicHint": ["Remove meaningless fillers and stutters; adjust punctuation while keeping your wording.", "去除无意义的口水词和口吃重复，整理必要标点，尽量保留原话。", "去除無意義的贅詞和口吃重複，整理必要標點，盡量保留原話。"],
         "cleanHint": ["Clean up fillers, correct grammar and lightly polish wording while preserving your tone.", "在基础整理上修正语病、轻微调整措辞，保留原意和语气。", "在基礎整理上修正語病、輕微調整措辭，保留原意和語氣。"],
-        "structuredHint": ["Clean up fillers and organize existing ideas into paragraphs, headings or lists when useful.", "在基础整理上按内容分段、归类，必要时生成标题和列表；短句不强行拆分。", "在基礎整理上按內容分段、歸類，必要時產生標題和清單；短句不強行拆分。"],
+        "structuredHint": ["Remove all meaningless fillers and redundant wording, rewrite in clear written language, and group ideas into paragraphs or lists as needed while preserving meaning.", "去除所有无意义的口水词和冗余表达，优化语句，使表达更书面化；按内容归类，必要时分段、列点，保留原意。", "去除所有無意義的贅詞和冗餘表達，優化語句，使表達更書面化；按內容歸類，必要時分段、列點，保留原意。"],
         "keychainApprovalHint": ["In the system dialog, enter your Mac login password and choose Always Allow to remember access. All keys share one Keychain item. Development updates may ask again.", "在系统弹窗输入 Mac 登录密码，选择“始终允许”可记住授权。全部密钥共用一个钥匙串条目。开发版本更新后可能需要再次确认。", "在系統彈窗輸入 Mac 登入密碼，選擇「永遠允許」可記住授權。全部金鑰共用一個鑰匙圈項目。開發版本更新後可能需要再次確認。"],
         "saveCredentials": ["Save keys", "保存密钥", "儲存金鑰"],
         "arkHint": ["Enable this model in Ark, then enter your Ark API key. Speech and Ark use separate keys.", "请在方舟开通此模型，并填写方舟 API 密钥。语音识别与方舟的密钥需分别获取。", "請在方舟開通此模型，並填寫方舟 API 金鑰。語音辨識與方舟的金鑰需分別取得。"],
@@ -107,8 +107,13 @@ enum Language: String, CaseIterable, Identifiable, Codable {
         "traditional": ["Traditional Chinese", "繁体中文", "繁體中文"],
         "changeShortcut": ["Change…", "修改…", "修改…"],
         "captureShortcut": ["Press a shortcut; release modifier-only keys. Esc cancels.", "请按快捷键；纯修饰键松开后确认。Esc 取消。", "請按快速鍵；純修飾鍵放開後確認。Esc 取消。"],
-        "shortcutHint": ["Fn, Fn + Space, or a modifier + key. Avoid system shortcuts. ⌃⌥⌘S always opens settings.", "支持 Fn、Fn＋空格、修饰键＋按键。请避开系统快捷键。⌃⌥⌘S 始终用于打开设置。", "支援 Fn、Fn＋空白鍵、修飾鍵＋按鍵。請避開系統快速鍵。⌃⌥⌘S 固定用於開啟設定。"],
-        "interaction": ["Recording gesture", "录音交互", "錄音操作"],
+        "interaction": ["Keyboard interaction", "按键交互", "按鍵互動"],
+        "recordingGesture": ["Recording gesture", "录音方式", "錄音方式"],
+        "selectionPolish": ["Organize selected text", "整理选中文本", "整理選取文字"],
+        "selectionPolishHint": ["Select text and press the shortcut to organize it.", "选中文字，按快捷键整理。", "選取文字，按快速鍵整理。"],
+        "noSelectedText": ["Select text in an editable field first. This app must support Accessibility text selection.", "请先在可编辑文本框中选中文字；该应用需要支持辅助功能读取选区。", "請先在可編輯文字框中選取文字；該 App 需要支援輔助使用讀取選區。"],
+        "selectionChanged": ["The field or selection changed. Original text was kept; you can copy the result.", "输入框或选区已改变，原文未被覆盖，可复制整理结果。", "輸入框或選區已改變，原文未被覆蓋，可複製整理結果。"],
+        "shortcutConflict": ["This shortcut is already used by the other action. Choose another shortcut.", "这个快捷键已被另一项功能使用，请重新设置。", "這個快速鍵已被另一項功能使用，請重新設定。"],
         "toggleFn": ["Press Fn to start / stop", "按一下 Fn 开始／结束", "按一下 Fn 開始／結束"],
         "holdFn": ["Hold Fn to talk", "按住 Fn 说话，松开提交", "按住 Fn 說話，放開提交"],
         "insertion": ["Insert text", "上屏方式", "輸入方式"],
@@ -227,9 +232,20 @@ enum WritingStyle: String, Codable, CaseIterable, Identifiable {
     var id: String { rawValue }
     var instruction: String {
         switch self {
-        case .basic: "Perform basic cleanup only: remove clearly meaningless speech fillers and accidental stutters, and correct necessary punctuation. Keep the original words, word order, grammar, tone and paragraph form. Do not paraphrase, polish vocabulary, restructure, add headings or make lists. When uncertain whether a word carries meaning, keep it."
-        case .clean: "Lightly polish the transcript: remove fillers and accidental repetition, correct punctuation and grammar. Preserve the original wording, order, tone and paragraph form wherever possible. Do not add headings or lists unless already present."
-        case .structured: "Restructure the transcript by topic into clear sections, concise headings and organized lists where useful. Group related points and clarify their relationships while retaining all substantive details, uncertainty and qualifications. Scale the structure to the content; do not force headings for a short sentence. Never invent facts, conclusions, action items or commitments."
+        case .basic: """
+            Perform minimal cleanup: remove meaningless fillers, verbal padding and accidental stutters, and correct punctuation. After removing fillers, keep the remaining original wording, word order, grammar, tone and paragraph form, even when somewhat colloquial or awkward. Do not paraphrase, polish vocabulary, repair sentence construction, add headings or make lists. Keeping original wording does NOT mean keeping speech fillers. Check that meaningless fillers have actually been removed before returning.
+            """
+        case .clean: """
+            Lightly polish into fluent, natural sentences. First remove all meaningless fillers, verbal padding and accidental repetition. Then actively correct grammar, awkward sentence construction and unnecessarily wordy phrasing; merely adding punctuation is insufficient when wording is awkward. You may change words and local word order as needed for fluency. For example, 使用起来不是很方便的 can become 用起来不太方便, and 需要去进行一个讨论 can become 需要讨论.
+            Preserve meaning, substantive details, conversational tone, perspective, opinion and uncertainty. Keep the original topic order and paragraph form; do not add headings or lists unless already present. Keep the degree of emphasis or uncertainty when consolidating redundant expressions. Do not invent content or turn the text into formal written prose. Before returning, check both that fillers are gone and that any awkward grammar or wording has been repaired. Do not preserve defective wording in the name of keeping the speaker's voice.
+            """
+        case .structured: """
+            Rewrite the dictation into clear, concise, well-organized written language. This is substantive editing, not just punctuation or paragraph splitting. You may change wording, sentence construction and order to improve clarity while preserving the speaker's meaning and all substantive details.
+            Remove ALL meaningless speech fillers, verbal padding, accidental repetition, abandoned starts and redundant restatements. In Chinese, expressions such as 嗯、呃、啊、那个、就是说、然后呢、怎么说呢、其实吧、对吧 must disappear when they only pad speech. Preserve their meaning when they express a real reference, sequence, affirmation or question, but express it directly in written language. For example, 嗯我同意 becomes 我同意。; 那个按钮不能点 remains 那个按钮不能点。 Do not mechanically delete words by keyword.
+            Replace colloquial, rambling phrasing with natural written sentences. Merge duplicate ideas and repair awkward grammar. Remove repeated 我觉得 or 我想 as verbal framing, but retain actual opinion, uncertainty and qualifications, for example 我觉得可能 becomes 可能 rather than a definite claim. Keep negation, emphasis that changes meaning, and the degree of certainty. Avoid bureaucratic jargon or inflated prose.
+            Organize by topic and logical relationship. When the source contains distinct parallel points, requirements, reasons or steps, use bullet points or a numbered list; use numbering for an actual sequence or explicit enumeration. Group related details under the same point and use concise headings only when they help navigate multiple topics. A short single idea should become a polished sentence, not an artificial list. Do not add introductions, summaries, conclusions, action items or commitments absent from the source.
+            Before returning, check that no meaningless fillers or redundant restatements remain, the wording reads as written prose, and multiple distinct points are visibly organized where useful.
+            """
         }
     }
 }

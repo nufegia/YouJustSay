@@ -18,6 +18,17 @@ import Carbon
         updater.start()
         applyVisibility()
         monitor.shortcut = preferences.shortcut
+        monitor.selectionShortcut = preferences.selectionShortcut
+        monitor.holdToTalk = preferences.holdToTalk
+        monitor.onSelection = { [weak self] in
+            guard let self else { return }
+            session.organizeSelection(preferences)
+        }
+        monitor.onCancelPrimary = { [weak self] in
+            guard let self, session.phase == .recording || session.phase == .requesting else { return }
+            session.discard(); session.onDismiss?()
+        }
+        monitor.onSelectionCaptured = { [weak self] value in self?.preferences.selectionShortcut = value }
         monitor.onTrigger = { [weak self] down in
             guard let self else { return }
             session.trigger(down: down, preferences: preferences)
@@ -88,6 +99,7 @@ import Carbon
         if session.hasAudio && session.phase == .ready {
             addMenuItem(menu, title: preferences.t("retry"), action: #selector(retryRecognition))
         }
+        addMenuItem(menu, title: preferences.t("selectionPolish"), action: #selector(organizeSelectedText), enabled: !session.busy && session.phase != .paused)
         menu.addItem(.separator())
         addMenuItem(menu, title: preferences.t("copyLast"), action: #selector(copyLast), enabled: !session.lastResult.isEmpty)
         let polish = NSMenuItem(title: preferences.t("organizer"), action: nil, keyEquivalent: "")
@@ -119,6 +131,7 @@ import Carbon
     @objc private func cancelRecording() { session.escape() }
     @objc private func resumeRecording() { session.resume(preferences) }
     @objc private func retryRecognition() { session.transcribe(preferences); showPanel() }
+    @objc private func organizeSelectedText() { session.organizeSelection(preferences) }
     @objc private func copyLast() { session.copyLastResult() }
     @objc private func selectPolishMode(_ sender: NSMenuItem) {
         guard !session.busy, let value = sender.representedObject as? String else { return }

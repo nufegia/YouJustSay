@@ -33,7 +33,7 @@ import ApplicationServices
         self.waitForPaste = waitForPaste
     }
 
-    private static func focusedTarget() -> Target? {
+    static func focusedTarget() -> Target? {
         guard let pid = NSWorkspace.shared.frontmostApplication?.processIdentifier else { return nil }
         var value: CFTypeRef?
         let application = AXUIElementCreateApplication(pid)
@@ -44,7 +44,7 @@ import ApplicationServices
         } else { element = nil }
         return Target(pid: pid, element: element)
     }
-    func insert(_ text: String, mode: InsertionMode) async throws -> String? {
+    func insert(_ text: String, mode: InsertionMode, expectedTarget: Target? = nil) async throws -> String? {
         try Task.checkCancellation()
         if mode == .copy { copyText(text); return nil }
         guard isTrusted() else { return "insertionFailed" }
@@ -53,6 +53,7 @@ import ApplicationServices
         guard let target = currentTarget(), target.pid != ProcessInfo.processInfo.processIdentifier else {
             return "insertionFailed"
         }
+        if let expectedTarget, !expectedTarget.matches(target) { return "targetChanged" }
         let source = CGEventSource(stateID: .privateState)
         if mode == .paste {
             guard let down = CGEvent(keyboardEventSource: source, virtualKey: 9, keyDown: true),

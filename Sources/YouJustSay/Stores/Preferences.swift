@@ -11,6 +11,7 @@ enum SettingsTab: Hashable {
     var recognitionLanguage: RecognitionLanguage { didSet { defaults.set(recognitionLanguage.rawValue, forKey: "recognitionLanguage") } }
     var chinesePreference: ChinesePreference { didSet { defaults.set(chinesePreference.rawValue, forKey: "chinesePreference") } }
     var shortcut: Shortcut { didSet { if let data = try? JSONEncoder().encode(shortcut) { defaults.set(data, forKey: "shortcut") } } }
+    var selectionShortcut: Shortcut { didSet { if let data = try? JSONEncoder().encode(selectionShortcut) { defaults.set(data, forKey: "selectionShortcut") } } }
     var holdToTalk: Bool { didSet { defaults.set(holdToTalk, forKey: "holdToTalk") } }
     var insertion: InsertionMode { didSet { defaults.set(insertion.rawValue, forKey: "insertion") } }
     var showDock: Bool { didSet { defaults.set(showDock, forKey: "showDock") } }
@@ -54,6 +55,7 @@ enum SettingsTab: Hashable {
         recognitionLanguage = RecognitionLanguage(rawValue: defaults.string(forKey: "recognitionLanguage") ?? "") ?? .automatic
         chinesePreference = ChinesePreference(rawValue: defaults.string(forKey: "chinesePreference") ?? "") ?? .automatic
         shortcut = defaults.data(forKey: "shortcut").flatMap { try? JSONDecoder().decode(Shortcut.self, from: $0) } ?? .fn
+        selectionShortcut = defaults.data(forKey: "selectionShortcut").flatMap { try? JSONDecoder().decode(Shortcut.self, from: $0) } ?? .fnSpace
         holdToTalk = defaults.bool(forKey: "holdToTalk")
         insertion = InsertionMode(rawValue: defaults.string(forKey: "insertion") ?? "") ?? .paste
         showDock = defaults.bool(forKey: "showDock")

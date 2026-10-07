@@ -183,7 +183,7 @@ figure{margin:0}
 .screenshot-tabs button[aria-selected="true"]{background:var(--teal);color:#fff;border-color:transparent;border-radius:8px}
 .showcase-copy .screenshot-note{font-size:12px;margin-top:22px}
 .screenshot-showcase figure{min-width:0}
-.screenshot-showcase img{object-fit:contain;aspect-ratio:1120/640;background:#f7f7f7}
+.screenshot-showcase img{object-fit:contain;aspect-ratio:auto;background:#f7f7f7}
 .screenshot-showcase figcaption{color:var(--muted);font-size:12px;text-align:center;margin-top:12px}
 .viewer-open{overflow:hidden}
 #image-viewer{border:0;border-radius:14px;padding:0;width:min(1100px,calc(100% - 32px));max-height:92dvh;max-width:none;background:#f7f8f8;box-shadow:0 30px 100px #0004}

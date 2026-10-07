@@ -21,6 +21,8 @@ import Observation
     private let recorder = AudioRecorder()
     private let client = ProviderClient()
     private let insertion = TextInsertion()
+    private let selectedText = SelectedText()
+    private var selection: SelectedText.Snapshot?
     private var task: Task<Void, Never>?
     private var timer: Task<Void, Never>?
     private var recoveryTask: Task<Void, Never>?
@@ -114,6 +116,18 @@ import Observation
             } catch { if token == generation { handle(error); phase = .ready } }
         }
     }
+    func organizeSelection(_ preferences: Preferences) {
+        guard !busy, phase != .paused else { return }
+        discard(); onDismiss?()
+        guard !preferences.modelKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            error = "missingLLM"; onPresentation?(); return
+        }
+        guard let snapshot = selectedText.capture() else {
+            error = "noSelectedText"; onPresentation?(); return
+        }
+        selection = snapshot; original = snapshot.text
+        polish(preferences); onPresentation?()
+    }
     func deliverOriginal(_ preferences: Preferences) { deliver(original, preferences: preferences, mode: .copy) }
     private func deliver(_ text: String, preferences: Preferences, mode: InsertionMode? = nil) {
         phase = .inserting
@@ -122,10 +136,13 @@ import Observation
         let method = mode ?? preferences.insertion
         task = Task {
             do {
-                let warning = try await insertion.insert(output, mode: method)
+                let warning: String?
+                if let selection, mode == nil {
+                    warning = try await selectedText.replace(output, selection: selection, mode: method)
+                } else { warning = try await insertion.insert(output, mode: method) }
                 guard token == generation else { return }
                 error = warning; completed = true; copiedOnly = method == .copy; lastResult = output; phase = .ready
-                recorder.discard(); hasAudio = false; original = ""
+                recorder.discard(); hasAudio = false; original = ""; selection = nil
                 if warning == nil {
                     try await Task.sleep(for: .seconds(1.5))
                     guard token == generation else { return }
@@ -155,7 +172,7 @@ import Observation
     func resume(_ preferences: Preferences) {
         guard phase == .paused, recovery.canResume() else { return }
         recoveryTask?.cancel(); recovery.clear(); phase = .ready
-        if !original.isEmpty && preferences.autoOrganize { polish(preferences) }
+        if !original.isEmpty && (selection != nil || preferences.autoOrganize) { polish(preferences) }
         else if !original.isEmpty { deliver(original, preferences: preferences) }
         else { transcribe(preferences) }
     }
@@ -167,7 +184,7 @@ import Observation
     }
     func discard() {
         generation = UUID(); task?.cancel(); timer?.cancel(); recoveryTask?.cancel()
-        recorder.discard(); hasAudio = false; original = ""; level = 0; waveform = AudioWaveform()
+        recorder.discard(); hasAudio = false; original = ""; selection = nil; level = 0; waveform = AudioWaveform()
         recovery.clear(); phase = .ready; error = nil; completed = false
     }
     private func handle(_ error: Error) {

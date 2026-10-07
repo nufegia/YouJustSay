@@ -38,7 +38,7 @@
     <section class="hero wrap" aria-labelledby="hero-title">
       <div class="hero-copy">
         <h1 id="hero-title">想说的，<br><span>直接变成写好的。</span></h1>
-        <p class="lead">给 Mac 加上语音输入。<br>按 Fn，说出想法，文字就到光标处。</p>
+        <p class="lead">给 Mac 加上语音输入。<br>按 Fn，说出想法，文字就到光标处。<br>选中文字，Fn + 空格帮你整理。</p>
         <div class="hero-actions">
           <a class="button" href="https://github.com/nufegia/YouJustSay/releases/latest"><svg class="icon"><use href="#download"/></svg>下载 Mac 版</a>
           <button class="button button-secondary" id="play-flow" type="button">看它怎么输入 <span aria-hidden="true">↗</span></button>
@@ -91,22 +91,22 @@
       <div class="screenshot-showcase" id="preview">
         <div class="showcase-copy">
           <h3>轻轻一按，<br>熟悉又顺手。</h3>
-          <p>按一下，或按住说话，选你顺手的方式。<br>文字怎么整理，服务怎么选，都由你决定。</p>
+          <p>按一下，或按住说话，选你顺手的方式。<br>选中文字后按 Fn + 空格，也能整理已有表达。<br>两组快捷键独立设置，上屏方式统一选择。</p>
           <div class="screenshot-tabs" role="tablist" aria-label="应用截图">
             <button role="tab" id="tab-cleanup" aria-selected="true" aria-controls="screenshot-panel" data-shot="cleanup">文字整理 <span aria-hidden="true">↗</span></button>
-            <button role="tab" id="tab-interaction" aria-selected="false" aria-controls="screenshot-panel" tabindex="-1" data-shot="interaction">录音交互 <span aria-hidden="true">↗</span></button>
+            <button role="tab" id="tab-interaction" aria-selected="false" aria-controls="screenshot-panel" tabindex="-1" data-shot="interaction">按键交互 <span aria-hidden="true">↗</span></button>
             <button role="tab" id="tab-models" aria-selected="false" aria-controls="screenshot-panel" tabindex="-1" data-shot="models">模型配置 <span aria-hidden="true">↗</span></button>
           </div>
-          <p class="screenshot-note">取自已安装的 1.0.4 正式版，局部放大展示。</p>
+          <p class="screenshot-note">取自 1.0.5 版本界面，局部放大展示。</p>
         </div>
         <figure id="screenshot-panel" role="tabpanel" aria-labelledby="tab-cleanup" tabindex="0">
-          <a class="screenshot-link" id="gallery-link" href="assets/cleanup-detail.jpg" data-zoom="正式版文字整理设置"><img id="gallery-image" src="assets/cleanup-detail.jpg" alt="正式版文字整理设置实拍：启用文字润色、方舟模型及轻度润色风格" width="1120" height="640" loading="lazy"></a>
+          <a class="screenshot-link" id="gallery-link" href="assets/cleanup-detail.jpg" data-zoom="正式版文字整理设置"><img id="gallery-image" src="assets/cleanup-detail.jpg" alt="正式版文字整理设置实拍：启用文字润色、方舟模型及高度结构化风格" width="1120" height="640" loading="lazy"></a>
           <figcaption id="gallery-caption">文字整理 · 正式版实拍</figcaption>
         </figure>
       </div>
       <div class="feature-notes">
         <article><h3>服务自己选，费用看用量。</h3><p>豆包识别语音，方舟或 OpenAI 兼容服务整理文字。应用不收订阅费，API 服务由你配置、按量付费。</p></article>
-        <article><h3>为 Mac 而做，随叫随到。</h3><p>Fn 开始或结束，Esc 取消。自动粘贴、直接键入或仅复制，选你顺手的方式。</p></article>
+        <article><h3>为 Mac 而做，随叫随到。</h3><p>Fn 开始或结束，Fn + 空格整理选中文字，Esc 取消。自动粘贴或模拟键入替换原选区；仅复制保留原文。</p></article>
       </div>
     </section>
     <section class="setup wrap section" id="start" aria-labelledby="start-title">
@@ -122,7 +122,8 @@
       <div class="faq-list">
         <details><summary>真的免费吗？</summary><p>你就说采用 MIT 开源许可证，应用免费，没有应用订阅费。语音识别和文字整理使用你自己的 API 密钥，所选服务商会按使用量计费；免费应用不代表 API 免费。</p></details>
         <details><summary>需要配置什么？</summary><p>需要一台运行 macOS 14 或更新系统的 Apple 芯片 Mac，以及豆包语音服务的密钥。文字整理可选：启用时配置方舟，或自定义 OpenAI 兼容服务的地址、模型与密钥。无需注册你就说账号。</p></details>
-        <details><summary>语音和文字会发到哪里？</summary><p>音频发送至配置的语音识别服务；开启整理时，识别文本会发送至所选整理服务。密钥保存在本机钥匙串，应用不保存文字历史，临时录音正常结束后删除。这是云端识别工具，并非离线识别。</p></details>
+        <details><summary>已经写好的文字，也能整理吗？</summary><p>可以。在可编辑文本框中选中文字，按 Fn + 空格，使用配置的整理服务和风格整理。即使关闭录音自动整理，这个快捷键仍然可用。可在「按键交互」中修改快捷键；自动粘贴或模拟键入会替换选区，仅复制则保留原文。请保持输入框和选区不变；目标应用需要支持辅助功能读取选区。</p></details>
+        <details><summary>语音和文字会发到哪里？</summary><p>音频发送至配置的语音识别服务；开启录音整理时，识别文本会发送至所选整理服务；使用「整理选中文本」时，选中文字会发送至同一整理服务。密钥保存在本机钥匙串，应用不保存文字历史，临时录音正常结束后删除。这是云端识别工具，并非离线识别。</p></details>
         <details><summary>首次打开被 macOS 拦截怎么办？</summary><p>当前安装包未使用 Developer ID 签名与苹果公证。确认从本项目 GitHub Releases 下载后，可到「系统设置 → 隐私与安全性 → 仍要打开」确认。详细步骤见<a href="https://github.com/nufegia/YouJustSay/blob/main/docs/INSTALL.zh-CN.md">安装指南</a>。</p></details>
       </div>
     </section>

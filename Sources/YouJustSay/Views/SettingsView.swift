@@ -60,6 +60,7 @@ struct SettingsView: View {
         .frame(width: 816)
         .frame(maxHeight: .infinity)
         .environment(\.locale, Locale(identifier: preferences.language == .automatic ? Language.initial.rawValue : preferences.language.rawValue))
+        .onChange(of: preferences.holdToTalk) { monitor.holdToTalk = preferences.holdToTalk }
         .onChange(of: preferences.showDock) { applyVisibility() }
         .onChange(of: preferences.showMenu) { applyVisibility() }
         .onChange(of: preferences.language) { applyVisibility() }
@@ -99,7 +100,7 @@ struct SettingsView: View {
     }
     private func settingsSection<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            if title != pageTitle && title != "insertion" {
+            if !title.isEmpty && title != pageTitle && title != "insertion" {
                 Text(preferences.t(title)).font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(.secondary).padding(.leading, 2)
             }
@@ -145,18 +146,29 @@ struct SettingsView: View {
     }
     private var interaction: some View {
         settingsForm {
-            settingsSection("interaction") {
+            settingsSection("") {
                 settingsRow(preferences.t("shortcut")) {
                     Text(preferences.shortcut.display).font(.system(.body, design: .monospaced).weight(.medium))
                         .padding(.horizontal, 12).padding(.vertical, 5)
                         .background(.quaternary, in: RoundedRectangle(cornerRadius: 6))
                     Button(preferences.t("changeShortcut")) { monitor.beginCapture() }.disabled(!monitor.running)
                 }
-                if monitor.capturing { Text(preferences.t("captureShortcut")).font(.caption).foregroundStyle(.orange) }
-                settingsRow(preferences.t("interaction")) {
-                    SettingsPicker(preferences.t("interaction"), selection: $preferences.holdToTalk, options: [false, true]) { preferences.t($0 ? "holdFn" : "toggleFn").replacingOccurrences(of: "Fn", with: preferences.shortcut.display) }
+                if monitor.capturing && !monitor.capturingSelection { Text(preferences.t("captureShortcut")).font(.caption).foregroundStyle(.orange) }
+                settingsRow(preferences.t("recordingGesture")) {
+                    SettingsPicker(preferences.t("recordingGesture"), selection: $preferences.holdToTalk, options: [false, true]) { preferences.t($0 ? "holdFn" : "toggleFn").replacingOccurrences(of: "Fn", with: preferences.shortcut.display) }
                 }
             }
+            settingsSection("") {
+                settingsRow(preferences.t("selectionPolish")) {
+                    Text(preferences.selectionShortcut.display).font(.system(.body, design: .monospaced).weight(.medium))
+                        .padding(.horizontal, 12).padding(.vertical, 5)
+                        .background(.quaternary, in: RoundedRectangle(cornerRadius: 6))
+                    Button(preferences.t("changeShortcut")) { monitor.beginCapture(selection: true) }.disabled(!monitor.running)
+                }
+                if monitor.capturingSelection && monitor.capturing { Text(preferences.t("captureShortcut")).font(.caption).foregroundStyle(.orange) }
+                Text(preferences.t("selectionPolishHint")).font(.caption).foregroundStyle(.secondary)
+            }
+            if let error = monitor.captureError { Text(preferences.t(error)).font(.caption).foregroundStyle(.red) }
             settingsSection("insertion") {
                 settingsRow(preferences.t("insertion")) {
                     SettingsPicker(preferences.t("insertion"), selection: $preferences.insertion, options: InsertionMode.allCases) { preferences.t($0 == .copy ? "copyOnly" : $0.rawValue) }

@@ -6,6 +6,8 @@ struct Shortcut: Codable, Equatable {
     var modifiers: UInt64
     var keyName: String
     static let fn = Shortcut(keyCode: nil, modifiers: CGEventFlags.maskSecondaryFn.rawValue, keyName: "")
+    static let fnSpace = Shortcut(keyCode: 49, modifiers: CGEventFlags.maskSecondaryFn.rawValue, keyName: "Space")
+    func conflicts(with other: Shortcut) -> Bool { keyCode == other.keyCode && modifiers == other.modifiers }
     static let allowedFlags: CGEventFlags = [.maskCommand, .maskControl, .maskAlternate, .maskShift, .maskSecondaryFn]
     var display: String {
         let flags = CGEventFlags(rawValue: modifiers)
