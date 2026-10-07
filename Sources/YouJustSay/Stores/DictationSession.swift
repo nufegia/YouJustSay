@@ -26,6 +26,7 @@ import Observation
     private var task: Task<Void, Never>?
     private var timer: Task<Void, Never>?
     private var recoveryTask: Task<Void, Never>?
+    private var completionTask: Task<Void, Never>?
     private var recovery = RecoveryWindow()
     private var generation = UUID()
     private var stopWhenReady = false
@@ -143,11 +144,7 @@ import Observation
                 guard token == generation else { return }
                 error = warning; completed = true; copiedOnly = method == .copy; lastResult = output; phase = .ready
                 recorder.discard(); hasAudio = false; original = ""; selection = nil
-                if warning == nil {
-                    try await Task.sleep(for: .seconds(1.5))
-                    guard token == generation else { return }
-                    onDismiss?()
-                }
+                if warning == nil { scheduleCompletionDismissal() }
             } catch { if token == generation { handle(error); phase = .ready } }
         }
     }
@@ -176,14 +173,26 @@ import Observation
         else if !original.isEmpty { deliver(original, preferences: preferences) }
         else { transcribe(preferences) }
     }
-    func copyLastResult() {
+    func copyLastResult(to pasteboard: NSPasteboard = .general) {
         guard !lastResult.isEmpty else { return }
-        NSPasteboard.general.clearContents()
-        NSPasteboard.general.setString(lastResult, forType: .string)
-        if completed { error = nil; copiedOnly = true }
+        pasteboard.clearContents()
+        guard pasteboard.setString(lastResult, forType: .string) else { return }
+        if completed && phase == .ready {
+            error = nil; copiedOnly = true
+            scheduleCompletionDismissal()
+        }
+    }
+    private func scheduleCompletionDismissal() {
+        completionTask?.cancel()
+        let token = generation
+        completionTask = Task { [weak self] in
+            do { try await Task.sleep(for: .seconds(1)) } catch { return }
+            guard let self, token == generation, phase == .ready, completed, error == nil else { return }
+            onDismiss?()
+        }
     }
     func discard() {
-        generation = UUID(); task?.cancel(); timer?.cancel(); recoveryTask?.cancel()
+        generation = UUID(); task?.cancel(); timer?.cancel(); recoveryTask?.cancel(); completionTask?.cancel()
         recorder.discard(); hasAudio = false; original = ""; selection = nil; level = 0; waveform = AudioWaveform()
         recovery.clear(); phase = .ready; error = nil; completed = false
     }

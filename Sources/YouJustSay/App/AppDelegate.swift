@@ -80,7 +80,9 @@ import Carbon
     func applyVisibility() {
         configureMenu()
         settingsWindow?.title = "\(preferences.t("app")) · \(preferences.t("settings"))"
-        NSApp.setActivationPolicy(preferences.showDock ? .regular : .accessory)
+        let policy: NSApplication.ActivationPolicy = preferences.showDock ? .regular : .accessory
+        if NSApp.activationPolicy() != policy { NSApp.setActivationPolicy(policy) }
+        if let settingsWindow { Self.configureSettingsVisibility(settingsWindow, showDock: preferences.showDock) }
         if preferences.showMenu {
             if statusItem == nil { statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength) }
             statusItem?.button?.image = NSImage(systemSymbolName: "waveform", accessibilityDescription: preferences.t("app"))
@@ -175,6 +177,12 @@ import Carbon
     }
     @objc private func openSettings() { showSettings() }
     @objc private func quitApp() { NSApp.terminate(nil) }
+    static func configureSettingsVisibility(_ window: NSWindow, showDock: Bool) {
+        // Authorization UI can hide an accessory app while taking focus. Keep its
+        // settings visible; regular Dock apps retain the normal Hide behavior.
+        window.canHide = showDock
+        window.hidesOnDeactivate = false
+    }
     func showSettings() {
         login.refresh()
         if settingsWindow == nil {
@@ -189,6 +197,7 @@ import Carbon
             window.contentView = hostingView
             window.initialFirstResponder = window.contentView
             window.isReleasedWhenClosed = false
+            Self.configureSettingsVisibility(window, showDock: preferences.showDock)
             window.center(); settingsWindow = window
         }
         NSApp.activate(ignoringOtherApps: true)
