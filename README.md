@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="Resources/AppIcon.icon/Assets/VoiceLight.png" alt="你就说应用图标" width="96" height="96" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="website/assets/app-icon-dark.png" />
+    <img src="website/assets/app-icon.png" alt="你就说应用图标" width="96" height="96" />
+  </picture>
 </p>
 
 <h1 align="center">你就说 · YouJustSay</h1>
@@ -82,7 +85,7 @@
 
 [下载最新正式版](https://github.com/nufegia/YouJustSay/releases/latest) · [完整安装说明](docs/INSTALL.zh-CN.md)
 
-下载 DMG 后，将应用拖入「应用程序」。本版未使用 Developer ID 签名与苹果公证；首次打开如被拦截，请前往「系统设置 → 隐私与安全性 → 仍要打开」确认。随后授权麦克风和辅助功能。
+下载 DMG 后，将应用拖入「应用程序」。从 1.0.7 起，应用已使用 Apple 颁发的 Developer ID 证书签名并通过苹果公证，可以正常双击打开。首次运行仍需按系统提示确认打开，并授权麦克风和辅助功能。
 
 从 1.0.3 开始，可在「关于」页或应用菜单中检查更新。更新通过 GitHub Releases 分发，安装前验证更新签名并请求确认；也可关闭自动检查。1.0.2 用户需先手动安装新版本一次。[更新与发布说明](docs/UPDATES.zh-CN.md)
 

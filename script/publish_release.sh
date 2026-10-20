@@ -12,6 +12,10 @@ if [ -n "$(git status --porcelain)" ]; then
 fi
 VERSION=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' Resources/Info.plist)
 TAG="v$VERSION"
+if [ -z "${YOUJUSTSAY_NOTARY_PROFILE:-}" ] && [ "${YOUJUSTSAY_USE_NOTARIZED_APP:-0}" != 1 ]; then
+    echo 'Public releases require a notarization profile or an already notarized app.' >&2
+    exit 1
+fi
 ./script/package_release.sh
 # A draft keeps the latest public appcast and installer available until publication.
 gh release create "$TAG" \

@@ -1,11 +1,10 @@
 # YouJustSay 图标
 
-当前前景资源为 `Resources/AppIcon.icon/Assets/VoiceSoft.png`，由内置 image_gen 以 VoiceLight.png 为参考精修，适度减弱高光与浮雕，保留柔和立体感。
+1.0.7 使用用户确认的扁平对话框与三段声波方案，不使用浮雕、材质纹理、镜面高光或图层投影。
 
-当前编辑提示词：Carefully retouch this EXACT existing YouJustSay app icon, not a redesign. Keep its filled teal speech bubble, shape, three transparent vertical waveform slots, their proportions, composition, position, canvas size and transparent background identical. Reduce the current embossing and shininess by about 45 percent, not 100 percent. Preserve the gentle rounded volume and rich teal tonal shading of the reference. Soften the bright white top-left reflection into a subdued wide teal highlight, reduce the luminous outer rim, make edge bevels thinner and the slot inset shadows shallower. The result should still have clearly visible soft 3D layering, but feel quiet, refined and softly satin rather than glossy glass or a thick inflated badge. Retain filled surfaces and nuanced shading: do NOT turn it into a flat solid silhouette or outline icon. No new shadow outside the shape, no text, no new symbols, no background tile. Preserve true alpha transparency outside and inside the three slots. This is a moderate refinement of the supplied image, not the earlier flat or matte cutout interpretations.
+- `Resources/AppIcon.icon/Assets/VoiceFlatLight.svg`：暖白底上的深青绿对话轮廓与声波。
+- `Resources/AppIcon.icon/Assets/VoiceFlatDark.svg`：炭灰底上的米白对话轮廓与薄荷绿声波。
+- 两种外观共享相同的矢量路径、位置和大小。`icon.json` 按外观选择对应图层，关闭 glass、specular、translucency 与 shadow。
+- `website/assets/app-icon.png` 与 `app-icon-dark.png` 是同一矢量方案的网页副本。网站导航、网页标签页及 README 支持亮暗外观。
 
-亮暗外观共用同一透明前景，分别使用浅色／近黑色底板；图层缩放为 0.78。配置以 `Resources/AppIcon.icon/icon.json` 为准。
-
-构建脚本通过 actool 将图标编译为 Assets.car 与兼容图标 AppIcon.icns。
-
-规范参考：[Apple Icon Composer](https://developer.apple.com/icon-composer/)。
+构建脚本通过 actool 将图标编译为 Assets.car 与兼容图标 AppIcon.icns。旧版 PNG 仅作为历史设计资源保留，不参与当前图标编译。

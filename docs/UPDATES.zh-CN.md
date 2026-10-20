@@ -11,8 +11,34 @@
 不要提交、上传或打印私钥；更换发布电脑前，使用 Sparkle `generate_keys` 的导出／导入功能安全备份和迁移。
 不要重新生成公钥替换现有公钥，否则已安装版本将无法验证后续更新。
 
-更新签名与 Apple Developer ID 签名是两种不同签名；目前仍未使用 Apple Developer ID 或公证。
-初次手动安装的系统授权方式见安装说明。
+更新签名与 Apple Developer ID 签名是两种不同签名。从 1.0.7（构建 8）起，
+正式发行应用使用 Apple 颁发的 Developer ID 证书签名，并通过苹果公证。
+安装方式见 `INSTALL.zh-CN.md`。本地临时签名测试包的说明见 `INSTALL-LOCAL.zh-CN.md`。
+
+### Developer ID 与公证打包
+
+本机钥匙串需具备带私钥的有效 `Developer ID Application` 证书，并使用
+`xcrun notarytool store-credentials YouJustSay-notary` 交互配置公证凭据。
+凭据只保存于钥匙串，不写入仓库或发布包。
+
+```sh
+export YOUJUSTSAY_SIGNING_IDENTITY='Developer ID Application: 你的证书名称 (TEAMID)'
+export YOUJUSTSAY_NOTARY_PROFILE='YouJustSay-notary'
+./script/package_release.sh
+```
+
+设置公证 profile 后，脚本会先检查证书和公证认证，启用 Hardened Runtime、
+签署 Sparkle 内嵌组件及应用，并声明录音所需的 Audio Input entitlement。
+应用和 DMG 分别公证并附加凭证、通过 Gatekeeper 验证后，才为最终 DMG
+生成 Sparkle 更新签名与校验和。公证结果保存在 `dist/*-notarization.plist`。
+公证包内使用专用安装说明；未设置 profile 时仍可生成原有本地测试包。
+生成安装包不会自动发布到 GitHub。
+
+也可使用 Xcode Organizer 的 Direct Distribution，利用已登录账号完成应用公证，
+导出应用后放到 `dist/YouJustSay.app`，再设置 `YOUJUSTSAY_USE_NOTARIZED_APP=1`
+和 `YOUJUSTSAY_SIGNING_IDENTITY` 运行打包脚本。此模式校验已有应用的签名、
+公证凭证及 Gatekeeper 结果，不重新构建应用；DMG 签名后生成更新清单。
+此模式只声明内嵌应用已公证，不声明 DMG 本身拥有独立的公证凭证。
 
 ## 发布
 

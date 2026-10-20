@@ -30,6 +30,8 @@ svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-l
 .small-break{display:none}
 .hero-actions{display:flex;flex-wrap:wrap;gap:18px;margin-top:42px}
 .compatibility{font-size:14px;color:var(--muted);margin-top:21px}
+.release-trust{font-size:13px;color:var(--teal);margin-top:7px;line-height:1.7}
+.brand picture{display:flex;flex-shrink:0}
 .benefits{display:grid;grid-template-columns:repeat(3,1fr);padding-block:28px 40px;gap:35px}
 .benefits>div{display:flex;gap:22px;align-items:flex-start}
 .benefits>div+div{border-left:1px solid var(--line);padding-left:32px}

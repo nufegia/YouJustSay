@@ -11,9 +11,10 @@
   <meta property="og:title" content="你就说 — 想说的，直接变成写好的。">
   <meta property="og:description" content="免费开源的 macOS 语音输入工具。随口说，随心记。无应用订阅，需自备 API 密钥。">
   <meta property="og:url" content="https://nufegia.github.io/YouJustSay/">
-  <meta property="og:image" content="https://nufegia.github.io/YouJustSay/assets/app-icon.png">
+  <meta property="og:image" content="https://nufegia.github.io/YouJustSay/assets/app-icon.png?v=1.0.7">
   <link rel="canonical" href="https://nufegia.github.io/YouJustSay/">
-  <link rel="icon" type="image/png" href="assets/app-icon.png">
+  <link rel="icon" type="image/png" href="assets/app-icon.png?v=1.0.7" media="(prefers-color-scheme: light)">
+  <link rel="icon" type="image/png" href="assets/app-icon-dark.png?v=1.0.7" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="styles.css">
   <script src="app.js" defer></script>
 </head>
@@ -27,7 +28,7 @@
     <symbol id="keyboard" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M7 15h10"/></symbol>
   </defs></svg>
   <header class="site-header wrap">
-    <a class="brand" href="./" aria-label="你就说首页"><img src="assets/app-icon.png" alt="" width="44" height="44"><span>你就说</span></a>
+    <a class="brand" href="./" aria-label="你就说首页"><picture><source srcset="assets/app-icon-dark.png?v=1.0.7" media="(prefers-color-scheme: dark)"><img src="assets/app-icon.png?v=1.0.7" alt="" width="44" height="44"></picture><span>你就说</span></a>
     <nav aria-label="主导航">
       <a class="nav-detail" href="#why">为什么选它</a><a class="nav-detail" href="#start">开始使用</a>
       <a class="github-link" href="https://github.com/nufegia/YouJustSay">GitHub</a>
@@ -44,6 +45,7 @@
           <button class="button button-secondary" id="play-flow" type="button">看它怎么输入 <span aria-hidden="true">↗</span></button>
         </div>
         <p class="compatibility">macOS 14+ · Apple 芯片 · 自备 API 密钥</p>
+        <p class="release-trust">1.0.7 · 已完成 Apple Developer ID 签名与苹果公证</p>
       </div>
       <div class="voice-story" id="voice-story">
         <div class="spoken-line"><span class="story-label">你随口说</span><p>“嗯，突然想去海边，<br>什么也不安排，就走走。”</p></div>
@@ -68,7 +70,7 @@
         <article class="habit-story">
           <h3>输入法不用换，<br>多一种表达方式。</h3>
           <p>熟悉的键盘输入照旧。想说话时，按 Fn 就好。</p>
-          <div class="input-equation" aria-label="原有输入法加上你就说，共用原有输入框"><div class="old-input"><span>五笔</span><span>RIME</span><span>拼音</span></div><b aria-hidden="true">＋</b><div class="voice-addition"><img src="assets/app-icon.png" width="42" height="42" alt=""><span>你就说</span></div></div>
+          <div class="input-equation" aria-label="原有输入法加上你就说，共用原有输入框"><div class="old-input"><span>五笔</span><span>RIME</span><span>拼音</span></div><b aria-hidden="true">＋</b><div class="voice-addition"><picture><source srcset="assets/app-icon-dark.png?v=1.0.7" media="(prefers-color-scheme: dark)"><img src="assets/app-icon.png?v=1.0.7" width="42" height="42" alt=""></picture><span>你就说</span></div></div>
           <div class="shared-input">同一个输入框<span aria-hidden="true">│</span></div>
           <small>关系示意 · 支持自动粘贴、直接键入或仅复制</small>
         </article>
@@ -124,7 +126,7 @@
         <details><summary>需要配置什么？</summary><p>需要一台运行 macOS 14 或更新系统的 Apple 芯片 Mac，以及豆包语音服务的密钥。文字整理可选：启用时配置方舟，或自定义 OpenAI 兼容服务的地址、模型与密钥。无需注册你就说账号。</p></details>
         <details><summary>已经写好的文字，也能整理吗？</summary><p>可以。在可编辑文本框中选中文字，按 Fn + 空格，使用配置的整理服务和风格整理。即使关闭录音自动整理，这个快捷键仍然可用。可在「按键交互」中修改快捷键；自动粘贴或模拟键入会替换选区，仅复制则保留原文。请保持输入框和选区不变；目标应用需要支持辅助功能读取选区。</p></details>
         <details><summary>语音和文字会发到哪里？</summary><p>音频发送至配置的语音识别服务；开启录音整理时，识别文本会发送至所选整理服务；使用「整理选中文本」时，选中文字会发送至同一整理服务。密钥保存在本机钥匙串，应用不保存文字历史，临时录音正常结束后删除。这是云端识别工具，并非离线识别。</p></details>
-        <details><summary>首次打开被 macOS 拦截怎么办？</summary><p>当前安装包未使用 Developer ID 签名与苹果公证。确认从本项目 GitHub Releases 下载后，可到「系统设置 → 隐私与安全性 → 仍要打开」确认。详细步骤见<a href="https://github.com/nufegia/YouJustSay/blob/main/docs/INSTALL.zh-CN.md">安装指南</a>。</p></details>
+        <details><summary>安装后能直接打开吗？</summary><p>从 1.0.7 起，应用已使用 Apple 颁发的 Developer ID 证书签名，并通过苹果公证。下载 DMG，拖入「应用程序」后即可正常打开，首次运行仍需确认打开并授权麦克风和辅助功能。公证是苹果的安全检查，不代表上架 Mac App Store。详细步骤见<a href="https://github.com/nufegia/YouJustSay/blob/main/docs/INSTALL.zh-CN.md">安装指南</a>。</p></details>
       </div>
     </section>
     <section class="closing" aria-labelledby="closing-title"><div class="wrap"><h2 id="closing-title">下一句话，试着说出来。</h2><a class="button button-white" href="https://github.com/nufegia/YouJustSay/releases/latest">下载 Mac 版<svg class="icon"><use href="#arrow"/></svg></a><p>macOS 14+ · Apple 芯片 · 自备 API 密钥</p></div></section>

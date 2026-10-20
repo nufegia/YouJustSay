@@ -31,12 +31,16 @@ cp "$ICON_OUTPUT/AppIcon.icns" "$ICON_OUTPUT/Assets.car" "$APP_BUNDLE/Contents/R
 /usr/libexec/PlistBuddy -c 'Add :CFBundleIconFile string AppIcon' "$APP_BUNDLE/Contents/Info.plist"
 /usr/libexec/PlistBuddy -c 'Add :CFBundleIconName string AppIcon' "$APP_BUNDLE/Contents/Info.plist"
 SIGNING_IDENTITY="${YOUJUSTSAY_SIGNING_IDENTITY:--}"
+SIGNING_OPTIONS=(--timestamp=none)
+if [ "$SIGNING_IDENTITY" != "-" ]; then
+    SIGNING_OPTIONS=(--options runtime --timestamp)
+fi
 # Sign nested executables from the inside out; preserve Sparkle's helper structure.
 SPARKLE_VERSION="$APP_BUNDLE/Contents/Frameworks/Sparkle.framework/Versions/B"
 for COMPONENT in "$SPARKLE_VERSION"/XPCServices/*.xpc "$SPARKLE_VERSION/Updater.app" "$SPARKLE_VERSION/Autoupdate" "$APP_BUNDLE/Contents/Frameworks/Sparkle.framework"; do
-    codesign --force --preserve-metadata=entitlements --sign "$SIGNING_IDENTITY" "$COMPONENT"
+    codesign --force --preserve-metadata=entitlements "${SIGNING_OPTIONS[@]}" --sign "$SIGNING_IDENTITY" "$COMPONENT"
 done
-codesign --force --sign "$SIGNING_IDENTITY" "$APP_BUNDLE"
+codesign --force "${SIGNING_OPTIONS[@]}" --entitlements "$ROOT_DIR/Resources/YouJustSay.entitlements" --sign "$SIGNING_IDENTITY" "$APP_BUNDLE"
 codesign --verify --deep --strict "$APP_BUNDLE"
 if [ -d "$FINAL_BUNDLE" ]; then mv "$FINAL_BUNDLE" "$STAGING_DIR/previous.app"; fi
 mv "$APP_BUNDLE" "$FINAL_BUNDLE"
