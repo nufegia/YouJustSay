@@ -1,0 +1,28 @@
+{
+  "status": "User approved standalone high-resolution originals for 1.0.8 release",
+  "processing": "No cropping, tracing, upscaling or redrawing. App and website receive byte-identical copies of the original generated PNGs. Platform/web apply the outer rounded-square mask only.",
+  "assets": [
+    {
+      "appearance": "light",
+      "original": "docs/icon-source/high-resolution-draft/VoiceYLight-original.png",
+      "app": "Resources/AppIcon.icon/Assets/VoiceYLight.png",
+      "website": "website/assets/app-icon.png",
+      "pixels": [
+        1254,
+        1254
+      ],
+      "sha256": "9cc94729bc2e56e3b2d10de57b9a8f4bca7bdbdbcdfdb05161c90bfde6f11bc4"
+    },
+    {
+      "appearance": "dark",
+      "original": "docs/icon-source/high-resolution-draft/VoiceYDark-original.png",
+      "app": "Resources/AppIcon.icon/Assets/VoiceYDark.png",
+      "website": "website/assets/app-icon-dark.png",
+      "pixels": [
+        1254,
+        1254
+      ],
+      "sha256": "15d2cded60054e92ba31577d2916e9b74ef46e4db02efdc1ac2cb8878e7cf7e5"
+    }
+  ]
+}

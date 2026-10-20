@@ -1,10 +1,13 @@
 # YouJustSay 图标
 
-1.0.7 使用用户确认的扁平对话框与三段声波方案，不使用浮雕、材质纹理、镜面高光或图层投影。
+1.0.8 使用用户于 2026-10-20 确认的独立高分辨率 Y 形原图：流动的黑／米白线条与青色点缀。
 
-- `Resources/AppIcon.icon/Assets/VoiceFlatLight.svg`：暖白底上的深青绿对话轮廓与声波。
-- `Resources/AppIcon.icon/Assets/VoiceFlatDark.svg`：炭灰底上的米白对话轮廓与薄荷绿声波。
-- 两种外观共享相同的矢量路径、位置和大小。`icon.json` 按外观选择对应图层，关闭 glass、specular、translucency 与 shadow。
-- `website/assets/app-icon.png` 与 `app-icon-dark.png` 是同一矢量方案的网页副本。网站导航、网页标签页及 README 支持亮暗外观。
+- 亮暗原图分别保存在 `icon-source/high-resolution-draft/VoiceYLight-original.png` 与 `VoiceYDark-original.png`。目录沿用预览时的名称，两张图现已确认。
+- 两张均为内置生图工具独立生成的 1254 × 1254 PNG；不使用约 300 像素的方案图裁片，不放大、描摹或重绘。
+- `icon-source/selection.json` 记录原始文件、尺寸和 SHA-256；应用的 `VoiceYLight.png` / `VoiceYDark.png` 与网站的 `app-icon.png` / `app-icon-dark.png` 分别与对应原图字节一致。
+- 应用按外观使用亮暗图片；白色官网固定使用亮色版，避免跟随系统深色模式切为黑底。
+- 图标编译关闭 glass、specular、translucency 与 shadow；应用图层按系统底板宽度缩放至 0.8，保留原图内的留白，避免青色尖端碰到圆角裁切；网页仅作外框圆角适配。
 
-构建脚本通过 actool 将图标编译为 Assets.car 与兼容图标 AppIcon.icns。旧版 PNG 仅作为历史设计资源保留，不参与当前图标编译。
+构建时由 actool 编译为 Assets.car 和 AppIcon.icns。此前设计资源仅作历史保留，不参与当前图标编译。
+
+发布前检查编译后的图标边缘、小尺寸效果与安装包资源；仅以用户确认的高分辨率原图为来源。

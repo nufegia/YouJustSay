@@ -16,17 +16,24 @@
     {
       "layers": [
         {
-          "name": "Speech and voice waveform",
+          "name": "Generated Y artwork",
           "glass": false,
           "image-name-specializations": [
             {
-              "value": "VoiceFlatLight.svg"
+              "value": "VoiceYLight.png"
             },
             {
               "appearance": "dark",
-              "value": "VoiceFlatDark.svg"
+              "value": "VoiceYDark.png"
             }
-          ]
+          ],
+          "position": {
+            "scale": 0.8,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
         }
       ],
       "shadow": {
@@ -38,7 +45,7 @@
         "value": 0
       },
       "specular": false,
-      "name": "Flat voice"
+      "name": "Approved Y"
     }
   ],
   "supported-platforms": {
