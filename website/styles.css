@@ -70,9 +70,11 @@ h2{font-size:clamp(30px,3.5vw,48px);line-height:1.4;letter-spacing:-.04em}
 .button-white{background:white;color:var(--ink);min-width:215px}
 .button-white:hover{background:#eaf6f3}
 .closing p{font-size:13px;margin-top:17px;color:#d3e8e5}
-footer{padding-block:31px;display:flex;align-items:center;justify-content:space-between;font-size:14px;gap:24px}
+footer{padding-block:31px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;font-size:14px;gap:24px}
 footer>div{display:flex;gap:28px}
 .footer-brand{font-weight:600}
+.directory-badge{display:block;flex-shrink:0}
+.directory-badge img{display:block;width:200px;height:67px;max-width:100%}
 .mobile-only{display:none}
 .skip-link{position:absolute;left:16px;top:-80px;padding:12px;background:white;z-index:10}
 .skip-link:focus{top:16px}
