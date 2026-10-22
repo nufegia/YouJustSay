@@ -71,7 +71,8 @@ h2{font-size:clamp(30px,3.5vw,48px);line-height:1.4;letter-spacing:-.04em}
 .button-white:hover{background:#eaf6f3}
 .closing p{font-size:13px;margin-top:17px;color:#d3e8e5}
 footer{padding-block:31px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;font-size:14px;gap:24px}
-footer>div{display:flex;gap:28px}
+footer>div{display:flex;align-items:center;gap:28px}
+footer>div>a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;line-height:1}
 .footer-brand{font-weight:600}
 .directory-badge{display:block;flex-shrink:0}
 .directory-badge img{display:block;width:200px;height:67px;max-width:100%}
