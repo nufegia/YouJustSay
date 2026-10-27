@@ -183,6 +183,24 @@ import Carbon
         window.canHide = showDock
         window.hidesOnDeactivate = false
     }
+    static func presentSettingsWindow(_ window: NSWindow) {
+        // A retained window may be hidden, minimized, on another Space, or left
+        // outside the available displays after a monitor is disconnected.
+        window.collectionBehavior.insert(.moveToActiveSpace)
+        NSApp.unhide(nil)
+        if window.isMiniaturized { window.deminiaturize(nil) }
+        let titlebar = NSRect(x: window.frame.minX, y: window.frame.maxY - 28,
+                              width: window.frame.width, height: 28)
+        if !NSScreen.screens.contains(where: { $0.visibleFrame.intersection(titlebar).width >= 80 && $0.visibleFrame.intersection(titlebar).height >= 20 }),
+           let screen = NSScreen.screens.first(where: { NSMouseInRect(NSEvent.mouseLocation, $0.frame, false) }) ?? NSScreen.main {
+            let visible = screen.visibleFrame
+            window.setFrameOrigin(NSPoint(x: visible.midX - window.frame.width / 2,
+                                          y: max(visible.minY, visible.maxY - window.frame.height)))
+        }
+        NSApp.activate(ignoringOtherApps: true)
+        window.makeKeyAndOrderFront(nil)
+        window.orderFrontRegardless()
+    }
     func showSettings() {
         login.refresh()
         if settingsWindow == nil {
@@ -200,8 +218,7 @@ import Carbon
             Self.configureSettingsVisibility(window, showDock: preferences.showDock)
             window.center(); settingsWindow = window
         }
-        NSApp.activate(ignoringOtherApps: true)
-        settingsWindow?.makeKeyAndOrderFront(nil)
+        if let settingsWindow { Self.presentSettingsWindow(settingsWindow) }
         requestInitialPermissions()
     }
     private func resizePanel(_ size: CGSize) {

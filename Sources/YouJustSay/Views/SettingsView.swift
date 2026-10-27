@@ -56,6 +56,8 @@ struct SettingsView: View {
                 .buttonStyle(.bordered)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
+            // Scrolling pages must not expand the HStack and shift the sidebar.
+            .frame(width: 596)
         }
         .frame(width: 816)
         .frame(maxHeight: .infinity)
@@ -117,7 +119,8 @@ struct SettingsView: View {
             Text(title).font(.system(size: 13)).frame(width: 160, alignment: .leading)
             Spacer(minLength: 0)
             HStack(spacing: 10) { content() }
-                .frame(width: 304, alignment: .trailing)
+                // Leave room for a non-overlay scrollbar on longer pages.
+                .frame(minWidth: 0, maxWidth: 304, alignment: .trailing)
         }.frame(minHeight: 24)
     }
     private func settingsToggle(_ title: String, isOn: Binding<Bool>) -> some View {
