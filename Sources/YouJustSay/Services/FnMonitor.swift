@@ -2,8 +2,10 @@ import AppKit
 @preconcurrency import ApplicationServices
 import Observation
 import AVFoundation
+import OSLog
 
 @MainActor @Observable final class FnMonitor {
+    private let logger = Logger(subsystem: "app.youjustsay.native", category: "input-monitor")
     var accessibility = AXIsProcessTrusted()
     var microphone = AVCaptureDevice.authorizationStatus(for: .audio)
     var lastChecked: Date?
@@ -33,10 +35,12 @@ import AVFoundation
     func suspend() {
         suspensionCount += 1
         stop()
+        logger.notice("Input monitoring suspended; depth=\(self.suspensionCount)")
     }
     func resume() {
         guard suspensionCount > 0 else { return }
         suspensionCount -= 1
+        logger.notice("Input monitoring resume requested; depth=\(self.suspensionCount)")
         if !suspended { refresh() }
     }
     private func emit(_ action: @escaping @MainActor () -> Void) {
@@ -56,6 +60,9 @@ import AVFoundation
     private var pendingHold: Task<Void, Never>?
     private var candidateFlags: UInt64 = 0
     func refresh() {
+        // Activation and SwiftUI appearance can fire during updater/auth dialogs.
+        // Do not query TCC or recreate a tap while suspended.
+        guard !suspended, !disabledAfterTimeout else { return }
         accessibility = AXIsProcessTrusted()
         microphone = AVCaptureDevice.authorizationStatus(for: .audio)
         lastChecked = Date()
@@ -79,11 +86,15 @@ import AVFoundation
             }
             return consumed ? nil : Unmanaged.passUnretained(event)
         }, userInfo: Unmanaged.passUnretained(self).toOpaque())
-        guard let tap else { return }
+        guard let tap else {
+            logger.error("Input event tap creation failed")
+            return
+        }
         source = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0)
         CFRunLoopAddSource(CFRunLoopGetMain(), source, .commonModes)
         CGEvent.tapEnable(tap: tap, enable: true)
         running = true
+        logger.notice("Input event tap installed")
     }
     func handleEventTap(_ type: CGEventType, event: CGEvent) -> Bool {
         insideEventCallback = true
@@ -99,6 +110,7 @@ import AVFoundation
         if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
             // Fail open: never repeatedly rearm a tap that macOS disabled.
             guard !disabledAfterTimeout else { return false }
+            logger.error("Input event tap disabled by system; event=\(type.rawValue)")
             disabledAfterTimeout = true
             stop()
             DispatchQueue.main.async { [weak self] in
@@ -285,11 +297,15 @@ import AVFoundation
         }
     }
     func stop() {
+        let hadTap = tap != nil
         deliveryGeneration += 1
         capturing = false
+        // Disable first: never leave an enabled tap without a servicing source.
+        if let tap { CGEvent.tapEnable(tap: tap, enable: false) }
         if let source { CFRunLoopRemoveSource(CFRunLoopGetMain(), source, .commonModes) }
-        if let tap { CGEvent.tapEnable(tap: tap, enable: false); CFMachPortInvalidate(tap) }
+        if let tap { CFMachPortInvalidate(tap) }
         source = nil; tap = nil; running = false; resetGesture()
+        if hadTap { logger.notice("Input event tap removed") }
     }
     private func resetGesture() {
         pendingHold?.cancel(); pendingHold = nil

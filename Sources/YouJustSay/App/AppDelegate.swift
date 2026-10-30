@@ -1,6 +1,7 @@
 import AppKit
 import SwiftUI
 import Carbon
+import OSLog
 
 @MainActor final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSMenuItemValidation {
     let preferences = Preferences()
@@ -15,8 +16,14 @@ import Carbon
     private var statusItem: NSStatusItem?
     private var panelBottomCenter = NSPoint.zero
     func applicationDidFinishLaunching(_ notification: Notification) {
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown"
+        Logger(subsystem: "app.youjustsay.native", category: "lifecycle").notice("Application started; version=\(version, privacy: .public) pid=\(ProcessInfo.processInfo.processIdentifier)")
         preferences.credentials.onAuthorizationBegin = { [weak self] in self?.monitor.suspend() }
         preferences.credentials.onAuthorizationEnd = { [weak self] in self?.monitor.resume() }
+        updater.onInstallationActivityChanged = { [weak self] active in
+            guard let self else { return }
+            if active { monitor.suspend() } else { monitor.resume() }
+        }
         updater.start()
         applyVisibility()
         monitor.shortcut = preferences.shortcut
@@ -80,14 +87,20 @@ import Carbon
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool { showSettings(); return false }
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        // Stop intercepting input before credential flushing or any termination work.
+        monitor.suspend()
+        Logger(subsystem: "app.youjustsay.native", category: "lifecycle").notice("Termination requested; input tap released")
         Task {
             let saved = await preferences.credentials.flush()
-            if !saved { preferences.settingsTab = .models; showSettings() }
+            if !saved {
+                monitor.resume()
+                preferences.settingsTab = .models; showSettings()
+            }
             sender.reply(toApplicationShouldTerminate: saved)
         }
         return .terminateLater
     }
-    func applicationWillTerminate(_ notification: Notification) { session.discard(); monitor.stop(); shortcuts.unregister() }
+    func applicationWillTerminate(_ notification: Notification) { monitor.stop(); shortcuts.unregister(); session.discard() }
     func applyVisibility() {
         configureMenu()
         settingsWindow?.title = "\(preferences.t("app")) · \(preferences.t("settings"))"

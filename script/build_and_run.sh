@@ -42,6 +42,13 @@ for COMPONENT in "$SPARKLE_VERSION"/XPCServices/*.xpc "$SPARKLE_VERSION/Updater.
 done
 codesign --force "${SIGNING_OPTIONS[@]}" --entitlements "$ROOT_DIR/Resources/YouJustSay.entitlements" --sign "$SIGNING_IDENTITY" "$APP_BUNDLE"
 codesign --verify --deep --strict "$APP_BUNDLE"
+# Replacing the executable of a live process can make authd unable to resolve
+# its code identity (pidpathfailed), breaking Sparkle installation authorization.
+RUNNING_EXECUTABLES=$(ps -axo comm=) || { echo 'Cannot verify running applications; refusing bundle replacement.' >&2; exit 1; }
+if printf '%s\n' "$RUNNING_EXECUTABLES" | grep -Fx "$FINAL_BUNDLE/Contents/MacOS/$APP_NAME" >/dev/null; then
+    echo 'The dist application is still running. Quit it before replacing its bundle.' >&2
+    exit 1
+fi
 if [ -d "$FINAL_BUNDLE" ]; then mv "$FINAL_BUNDLE" "$STAGING_DIR/previous.app"; fi
 mv "$APP_BUNDLE" "$FINAL_BUNDLE"
 APP_BUNDLE="$FINAL_BUNDLE"
