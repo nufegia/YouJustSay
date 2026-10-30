@@ -21,6 +21,18 @@ struct ProviderClient: Sendable {
     func testText(configuration: TextConfiguration) async throws {
         _ = try await organize(text: "你好，这是一段文本整理测试。", style: .basic, configuration: configuration)
     }
+    func testSpeech(configuration: SpeechConfiguration, language: RecognitionLanguage = .automatic) async throws {
+        _ = try await transcribe(audio: Self.testAudio(), configuration: configuration, language: language)
+    }
+    func transcribe(audio: Data, configuration: SpeechConfiguration, language: RecognitionLanguage = .automatic) async throws -> String {
+        if configuration.provider == .doubao {
+            return try await transcribe(audio: audio, credentials: configuration.credentials, language: language)
+        }
+        let request = try OpenAIClient.speechRequest(audio: audio, key: configuration.credentials.key, model: configuration.model, language: language)
+        let (data, response) = try await session.data(for: request)
+        _ = try Self.validate(response, provider: "OpenAI")
+        return try OpenAIClient.decodeSpeech(data)
+    }
     static func speechRequest(audio: Data, credentials: SpeechCredentials, language: RecognitionLanguage = .automatic) throws -> URLRequest {
         var request = URLRequest(url: URL(string: "https://openspeech.bytedance.com/api/v3/auc/bigmodel/recognize/flash")!)
         request.httpMethod = "POST"
@@ -30,7 +42,7 @@ struct ProviderClient: Sendable {
             request.setValue(credentials.appID, forHTTPHeaderField: "X-Api-App-Key")
             request.setValue(credentials.token, forHTTPHeaderField: "X-Api-Access-Key")
         } else { request.setValue(credentials.key, forHTTPHeaderField: "X-Api-Key") }
-        request.setValue("volc.bigasr.auc_turbo", forHTTPHeaderField: "X-Api-Resource-Id")
+        request.setValue(DoubaoSpeechModel.resourceID, forHTTPHeaderField: "X-Api-Resource-Id")
         request.setValue(UUID().uuidString, forHTTPHeaderField: "X-Api-Request-Id")
         request.setValue("-1", forHTTPHeaderField: "X-Api-Sequence")
         request.httpBody = try JSONSerialization.data(withJSONObject: [
@@ -58,8 +70,17 @@ struct ProviderClient: Sendable {
         var request = URLRequest(url: try configuration.endpoint())
         request.httpMethod = "POST"
         request.timeoutInterval = 120
-        request.setValue("Bearer \(configuration.key)", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(configuration.key.trimmingCharacters(in: .whitespacesAndNewlines))", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if configuration.provider == .openai {
+            request.httpBody = try JSONSerialization.data(withJSONObject: [
+                "model": configuration.model.trimmingCharacters(in: .whitespacesAndNewlines),
+                "store": false, "stream": false,
+                "instructions": DictationEditing.instruction(style: style),
+                "input": [["role": "user", "content": try DictationEditing.sourceMessage(text)]]
+            ])
+            return request
+        }
         var body: [String: Any] = [
             "model": configuration.model, "stream": false, "max_tokens": 8192,
             "messages": [
@@ -74,7 +95,8 @@ struct ProviderClient: Sendable {
     func organize(text: String, style: WritingStyle, configuration: TextConfiguration) async throws -> String {
         let (data, response) = try await session.data(for: Self.textRequest(text: text, style: style, configuration: configuration))
         _ = try Self.validate(response, provider: configuration.provider.rawValue)
-        return DictationEditing.result(try Self.decodeText(data), source: text)
+        let result = try configuration.provider == .openai ? OpenAIClient.decodeText(data) : Self.decodeText(data)
+        return DictationEditing.result(result, source: text)
     }
     static func decodeText(_ data: Data) throws -> String {
         struct Payload: Decodable {

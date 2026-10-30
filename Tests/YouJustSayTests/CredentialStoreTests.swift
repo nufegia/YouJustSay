@@ -97,3 +97,44 @@ final class CredentialStoreTests: XCTestCase {
         XCTAssertTrue(store.loaded)
     }
 }
+
+extension CredentialStoreTests {
+    @MainActor func testPastedWhitespaceIsRemovedBeforeDisplayAndSave() async {
+        var saved: [String: String] = [:]
+        let store = CredentialStore(read: { _ in ["openai": " old\r\nkey\u{2028}"] }, write: { saved = $0 })
+        await store.authorizeIfNeeded()
+        XCTAssertEqual(store.values["openai"], "oldkey")
+        store.set(" \t sk-test\r\n-only\u{2028}\u{2029} \n", for: "openaiSpeech")
+        XCTAssertEqual(store.values["openaiSpeech"], "sk-test-only")
+        let success = await store.flush()
+        XCTAssertTrue(success)
+        XCTAssertEqual(saved["openaiSpeech"], "sk-test-only")
+        XCTAssertEqual(store.values["openai"], "oldkey")
+    }
+}
+
+extension CredentialStoreTests {
+    @MainActor func testAuthorizationHooksBracketReadAndFailedWrite() async {
+        var suspended = false
+        var events: [String] = []
+        let store = CredentialStore(read: { interactive in
+            XCTAssertTrue(interactive)
+            XCTAssertTrue(suspended)
+            events.append("read")
+            return [:]
+        }, write: { _ in
+            XCTAssertTrue(suspended)
+            events.append("write")
+            throw AppFailure.message("keychain")
+        })
+        store.onAuthorizationBegin = { suspended = true; events.append("begin") }
+        store.onAuthorizationEnd = { suspended = false; events.append("end") }
+        await store.authorizeIfNeeded()
+        XCTAssertFalse(suspended)
+        store.set("dummy", for: "openai")
+        let saved = await store.flush()
+        XCTAssertFalse(saved)
+        XCTAssertFalse(suspended)
+        XCTAssertEqual(events, ["begin", "read", "end", "begin", "write", "end"])
+    }
+}

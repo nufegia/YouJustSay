@@ -15,6 +15,8 @@ import Carbon
     private var statusItem: NSStatusItem?
     private var panelBottomCenter = NSPoint.zero
     func applicationDidFinishLaunching(_ notification: Notification) {
+        preferences.credentials.onAuthorizationBegin = { [weak self] in self?.monitor.suspend() }
+        preferences.credentials.onAuthorizationEnd = { [weak self] in self?.monitor.resume() }
         updater.start()
         applyVisibility()
         monitor.shortcut = preferences.shortcut
@@ -28,12 +30,21 @@ import Carbon
             guard let self, session.phase == .recording || session.phase == .requesting else { return }
             session.discard(); session.onDismiss?()
         }
+        monitor.onMonitoringDisabled = { [weak self] in
+            guard let self, session.phase == .ready, session.error == nil else { return }
+            session.error = "shortcutPaused"
+            showPanel()
+        }
         monitor.onSelectionCaptured = { [weak self] value in self?.preferences.selectionShortcut = value }
         monitor.onTrigger = { [weak self] down in
             guard let self else { return }
             session.trigger(down: down, preferences: preferences)
         }
-        monitor.onEscape = { [weak self] in self?.session.escape() ?? false }
+        monitor.onEscape = { [weak self] in
+            guard let self, session.phase != .ready else { return false }
+            DispatchQueue.main.async { [weak self] in _ = self?.session.escape() }
+            return true
+        }
         monitor.onCaptured = { [weak self] value in self?.preferences.shortcut = value }
         monitor.refresh()
         shortcuts.action = { [weak self] _ in self?.showSettings() }
@@ -65,7 +76,7 @@ import Carbon
             )
         }
     }
-    func applicationDidBecomeActive(_ notification: Notification) { monitor.refresh(); login.refresh() }
+    func applicationDidBecomeActive(_ notification: Notification) { monitor.resumeAfterPrivacySettings(); monitor.refresh(); login.refresh() }
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool { showSettings(); return false }
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {

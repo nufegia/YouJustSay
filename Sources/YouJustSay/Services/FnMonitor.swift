@@ -1,5 +1,5 @@
 import AppKit
-import ApplicationServices
+@preconcurrency import ApplicationServices
 import Observation
 import AVFoundation
 
@@ -18,10 +18,35 @@ import AVFoundation
     var captureError: String?
     var onSelection: (() -> Void)?
     var onSelectionCaptured: ((Shortcut) -> Void)?
+    var onMonitoringDisabled: (() -> Void)?
     var onCancelPrimary: (() -> Void)?
     var onTrigger: ((Bool) -> Void)?
     var onEscape: (() -> Bool)?
     var onCaptured: ((Shortcut) -> Void)?
+    private var insideEventCallback = false
+    private var deliveryGeneration = 0
+    private var suspensionCount = 0
+    private var waitingForPrivacySettings = false
+    private(set) var disabledAfterTimeout = false
+    var suspended: Bool { suspensionCount > 0 }
+
+    func suspend() {
+        suspensionCount += 1
+        stop()
+    }
+    func resume() {
+        guard suspensionCount > 0 else { return }
+        suspensionCount -= 1
+        if !suspended { refresh() }
+    }
+    private func emit(_ action: @escaping @MainActor () -> Void) {
+        guard insideEventCallback else { action(); return }
+        let generation = deliveryGeneration
+        DispatchQueue.main.async { [weak self] in
+            guard let self, self.deliveryGeneration == generation, !self.suspended, !self.disabledAfterTimeout else { return }
+            action()
+        }
+    }
     private var tap: CFMachPort?
     private var source: CFRunLoopSource?
     private var pressed = false
@@ -34,10 +59,11 @@ import AVFoundation
         accessibility = AXIsProcessTrusted()
         microphone = AVCaptureDevice.authorizationStatus(for: .audio)
         lastChecked = Date()
+        guard !suspended, !disabledAfterTimeout else { return }
         // This is a modifying (.defaultTap) event tap: macOS authorizes it
         // through Accessibility, not the separate listen-only permission.
         guard accessibility else {
-            if pressed { onTrigger?(false) }
+            if pressed { emit { self.onTrigger?(false) } }
             stop()
             return
         }
@@ -48,7 +74,8 @@ import AVFoundation
         tap = CGEvent.tapCreate(tap: .cgSessionEventTap, place: .headInsertEventTap, options: .defaultTap, eventsOfInterest: mask, callback: { _, type, event, context in
             guard let context else { return Unmanaged.passUnretained(event) }
             let consumed = MainActor.assumeIsolated {
-                Unmanaged<FnMonitor>.fromOpaque(context).takeUnretainedValue().handle(type, event: event)
+                let monitor = Unmanaged<FnMonitor>.fromOpaque(context).takeUnretainedValue()
+                return monitor.handleEventTap(type, event: event)
             }
             return consumed ? nil : Unmanaged.passUnretained(event)
         }, userInfo: Unmanaged.passUnretained(self).toOpaque())
@@ -58,18 +85,29 @@ import AVFoundation
         CGEvent.tapEnable(tap: tap, enable: true)
         running = true
     }
+    func handleEventTap(_ type: CGEventType, event: CGEvent) -> Bool {
+        insideEventCallback = true
+        defer { insideEventCallback = false }
+        return handle(type, event: event)
+    }
     func beginCapture(selection: Bool = false) {
-        if pressed { onCancelPrimary?() }
+        if pressed { emit { self.onCancelPrimary?() } }
         resetGesture()
         candidateFlags = 0; capturing = true; capturingSelection = selection; captureError = nil
     }
     func handle(_ type: CGEventType, event: CGEvent) -> Bool {
         if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
-            if let tap { CGEvent.tapEnable(tap: tap, enable: true) }
-            if pressed { onTrigger?(false) }
-            resetGesture()
+            // Fail open: never repeatedly rearm a tap that macOS disabled.
+            guard !disabledAfterTimeout else { return false }
+            disabledAfterTimeout = true
+            stop()
+            DispatchQueue.main.async { [weak self] in
+                self?.onCancelPrimary?()
+                self?.onMonitoringDisabled?()
+            }
             return false
         }
+        guard !suspended, !disabledAfterTimeout else { return false }
         let key = event.getIntegerValueField(.keyboardEventKeycode)
         let flags = event.flags.intersection(Shortcut.allowedFlags)
         if capturing {
@@ -93,8 +131,8 @@ import AVFoundation
                 if !selectionPressed {
                     selectionPressed = true
                     suppressPrimary = true; pendingPrimary = false; pendingHold?.cancel()
-                    if pressed { pressed = false; onCancelPrimary?() }
-                    onSelection?()
+                    if pressed { pressed = false; emit { self.onCancelPrimary?() } }
+                    emit { self.onSelection?() }
                 }
                 return true
             }
@@ -107,8 +145,8 @@ import AVFoundation
             if down { selectionPressed = true }
             else if selectionPressed {
                 selectionPressed = false; suppressPrimary = true; pendingPrimary = false; pendingHold?.cancel()
-                if pressed { pressed = false; onCancelPrimary?() }
-                if flags.rawValue == 0 { onSelection?() }
+                if pressed { pressed = false; emit { self.onCancelPrimary?() } }
+                if flags.rawValue == 0 { emit { self.onSelection?() } }
             }
         }
         if suppressPrimary {
@@ -117,11 +155,11 @@ import AVFoundation
         }
         if let code = shortcut.keyCode {
             if type == .keyDown, key == code, shortcut.matches(flags: flags) {
-                if !pressed { pressed = true; onTrigger?(true) }
+                if !pressed { pressed = true; emit { self.onTrigger?(true) } }
                 return true
             }
             if pressed && ((type == .keyUp && key == code) || (type == .flagsChanged && !shortcut.matches(flags: flags))) {
-                pressed = false; onTrigger?(false)
+                pressed = false; emit { self.onTrigger?(false) }
                 if type == .keyUp { return true }
             }
         } else {
@@ -129,7 +167,7 @@ import AVFoundation
             // Hold mode keeps a short grace period for the second key of a chord.
             if type == .keyDown && pendingPrimary {
                 pendingPrimary = false; pendingHold?.cancel()
-                if pressed { pressed = false; onCancelPrimary?() }
+                if pressed { pressed = false; emit { self.onCancelPrimary?() } }
                 suppressPrimary = true
             }
             if type == .flagsChanged {
@@ -140,17 +178,17 @@ import AVFoundation
                         pendingHold = Task { [weak self] in
                             do { try await Task.sleep(for: .milliseconds(200)) } catch { return }
                             guard let self, pendingPrimary, !suppressPrimary else { return }
-                            pressed = true; onTrigger?(true)
+                            pressed = true; emit { self.onTrigger?(true) }
                         }
                     }
                 } else if !down && (pendingPrimary || pressed) {
                     pendingHold?.cancel()
                     if pressed {
                         pressed = false
-                        if flags.rawValue == 0 { onTrigger?(false) } else { onCancelPrimary?() }
+                        if flags.rawValue == 0 { emit { self.onTrigger?(false) } } else { emit { self.onCancelPrimary?() } }
                     }
                     else if pendingPrimary && flags.rawValue == 0 {
-                        onTrigger?(true); onTrigger?(false)
+                        emit { self.onTrigger?(true) }; emit { self.onTrigger?(false) }
                     }
                     if flags.rawValue != 0 { suppressPrimary = true }
                     pendingPrimary = false
@@ -164,17 +202,29 @@ import AVFoundation
         guard !value.conflicts(with: other) else {
             captureError = "shortcutConflict"; candidateFlags = 0; return
         }
-        if capturingSelection { selectionShortcut = value; onSelectionCaptured?(value) }
-        else { shortcut = value; onCaptured?(value) }
+        if capturingSelection { selectionShortcut = value; emit { self.onSelectionCaptured?(value) } }
+        else { shortcut = value; emit { self.onCaptured?(value) } }
         capturing = false; candidateFlags = 0; resetGesture()
     }
     func requestAccessibility() {
-        let options = ["AXTrustedCheckOptionPrompt": true] as CFDictionary
-        _ = AXIsProcessTrustedWithOptions(options)
-        openPrivacy("Privacy_Accessibility")
+        suspend()
+        defer { resume() }
+        _ = AccessibilityRepair.registerCurrentApplication(Bundle.main.bundleURL)
+        if AXIsProcessTrusted() {
+            openPrivacy("Privacy_Accessibility")
+        } else {
+            // A settings deep link cannot recreate the TCC entry after a reset.
+            // Request trust, then let the system alert open Settings instead of
+            // opening a second window alongside the alert ourselves.
+            beginPrivacyInteraction()
+            let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true]
+            _ = AXIsProcessTrustedWithOptions(options as CFDictionary)
+        }
         refresh()
     }
     func requestInitialMicrophone() async {
+        suspend()
+        defer { resume() }
         if AVCaptureDevice.authorizationStatus(for: .audio) == .notDetermined {
             _ = await AVCaptureDevice.requestAccess(for: .audio)
         }
@@ -182,26 +232,47 @@ import AVFoundation
     }
     func requestMicrophone() {
         if AVCaptureDevice.authorizationStatus(for: .audio) == .notDetermined {
-            Task { _ = await AVCaptureDevice.requestAccess(for: .audio); refresh() }
+            Task { await requestInitialMicrophone() }
         } else { openPrivacy("Privacy_Microphone") }
     }
     func manageAccessibility() { openPrivacy("Privacy_Accessibility") }
     func repairAccessibility() async {
         guard !repairingAccessibility else { return }
+        suspend()
+        defer { resume() }
         repairingAccessibility = true
         accessibilityRepairStatus = nil
         defer { repairingAccessibility = false }
-        do {
-            guard try await AccessibilityRepair.reset(bundleID: Bundle.main.bundleIdentifier) else {
-                accessibilityRepairStatus = "accessibilityRepairFailed"
-                return
-            }
-            refresh()
-            accessibilityRepairStatus = "accessibilityRepairReady"
+        // Register the actual running bundle, not an installed copy with the same ID.
+        _ = AccessibilityRepair.registerCurrentApplication(Bundle.main.bundleURL)
+        let reset: Bool
+        do { reset = try await AccessibilityRepair.reset(bundleID: Bundle.main.bundleIdentifier) }
+        catch { reset = false }
+        accessibility = AXIsProcessTrusted()
+        lastChecked = Date()
+        accessibilityRepairStatus = reset ? "accessibilityRepairReady" : "accessibilityRepairManual"
+        // Always offer an actionable system-managed recovery path, even when tccutil is denied.
+        if reset {
             requestAccessibility()
-        } catch { accessibilityRepairStatus = "accessibilityRepairFailed" }
+        } else {
+            NSWorkspace.shared.activateFileViewerSelecting([Bundle.main.bundleURL])
+            openPrivacy("Privacy_Accessibility")
+        }
+    }
+
+    func resumeAfterPrivacySettings() {
+        guard waitingForPrivacySettings else { return }
+        waitingForPrivacySettings = false
+        resume()
+    }
+    private func beginPrivacyInteraction() {
+        if !waitingForPrivacySettings {
+            waitingForPrivacySettings = true
+            suspend()
+        }
     }
     private func openPrivacy(_ pane: String) {
+        beginPrivacyInteraction()
         NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?\(pane)")!)
     }
     var microphoneStatusKey: String {
@@ -214,6 +285,8 @@ import AVFoundation
         }
     }
     func stop() {
+        deliveryGeneration += 1
+        capturing = false
         if let source { CFRunLoopRemoveSource(CFRunLoopGetMain(), source, .commonModes) }
         if let tap { CGEvent.tapEnable(tap: tap, enable: false); CFMachPortInvalidate(tap) }
         source = nil; tap = nil; running = false; resetGesture()

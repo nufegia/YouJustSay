@@ -12,7 +12,7 @@ if [ "$USE_NOTARIZED_APP" = 1 ] && [ -n "$NOTARY_PROFILE" ]; then
     echo 'Use either an existing notarized app or a notary profile, not both.' >&2
     exit 1
 fi
-if [ -n "$NOTARY_PROFILE" ] || [ "$USE_NOTARIZED_APP" = 1 ]; then
+if [ -n "$NOTARY_PROFILE" ] || [ "$USE_NOTARIZED_APP" = 1 ] || { [ -n "${YOUJUSTSAY_SIGNING_IDENTITY:-}" ] && [ "$YOUJUSTSAY_SIGNING_IDENTITY" != "-" ]; }; then
     if [ -z "${YOUJUSTSAY_SIGNING_IDENTITY:-}" ] || [ "$YOUJUSTSAY_SIGNING_IDENTITY" = "-" ]; then
         echo 'Notarization requires YOUJUSTSAY_SIGNING_IDENTITY (Developer ID Application).' >&2
         exit 1
@@ -64,11 +64,14 @@ fi
 cp -R dist/YouJustSay.app "$STAGING_DIR/"
 ln -s /Applications "$STAGING_DIR/Applications"
 cp docs/INSTALL-LOCAL.zh-CN.md "$STAGING_DIR/安装说明.txt"
+if [ -n "${YOUJUSTSAY_SIGNING_IDENTITY:-}" ] && [ "$YOUJUSTSAY_SIGNING_IDENTITY" != "-" ]; then
+    cp docs/INSTALL-CANDIDATE.zh-CN.md "$STAGING_DIR/安装说明.txt"
+fi
 if [ -n "$NOTARY_PROFILE" ] || [ "$USE_NOTARIZED_APP" = 1 ]; then
     cp docs/INSTALL-NOTARIZED.zh-CN.md "$STAGING_DIR/安装说明.txt"
 fi
 hdiutil create -volname "YouJustSay $VERSION" -srcfolder "$STAGING_DIR" -ov -format UDZO "dist/$NAME.dmg"
-if [ -n "$NOTARY_PROFILE" ] || [ "$USE_NOTARIZED_APP" = 1 ]; then
+if [ -n "${YOUJUSTSAY_SIGNING_IDENTITY:-}" ] && [ "$YOUJUSTSAY_SIGNING_IDENTITY" != "-" ]; then
     codesign --force --timestamp --sign "$YOUJUSTSAY_SIGNING_IDENTITY" "dist/$NAME.dmg"
     codesign --verify --strict "dist/$NAME.dmg"
 fi

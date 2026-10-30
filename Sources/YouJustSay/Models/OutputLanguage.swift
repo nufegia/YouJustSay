@@ -10,6 +10,15 @@ enum RecognitionLanguage: String, CaseIterable, Identifiable {
     case nepali = "ne-NP", ukrainian = "uk-UA"
     var id: String { rawValue }
     var apiValue: String { rawValue }
+    var openAICode: String {
+        if self == .filipino { return "tl" }
+        return String(rawValue.split(separator: "-").first ?? "")
+    }
+    func name(in language: Language, provider: SpeechProvider) -> String {
+        if provider == .doubao || self == .automatic { return name(in: language) }
+        let resolved = language == .automatic ? Language.initial : language
+        return Locale(identifier: resolved.rawValue).localizedString(forLanguageCode: openAICode) ?? openAICode
+    }
     func name(in language: Language) -> String {
         if self == .automatic { return language.text("automatic") }
         let resolved = language == .automatic ? Language.initial : language

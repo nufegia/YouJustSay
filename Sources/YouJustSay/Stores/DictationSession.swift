@@ -87,12 +87,12 @@ import Observation
         guard !busy else { return }
         guard preferences.speechReady else { error = "missingSpeech"; return }
         error = nil; phase = .transcribing
-        let credentials = SpeechCredentials(key: preferences.doubaoKey, appID: preferences.appID, token: preferences.accessToken, legacy: preferences.legacyAuth)
+        let configuration = preferences.speechConfiguration
         let language = preferences.recognitionLanguage
         let token = generation
         task = Task {
             do {
-                let text = try await client.transcribe(audio: recorder.data(), credentials: credentials, language: language)
+                let text = try await client.transcribe(audio: recorder.data(), configuration: configuration, language: language)
                 try Task.checkCancellation()
                 guard token == generation else { return }
                 original = text

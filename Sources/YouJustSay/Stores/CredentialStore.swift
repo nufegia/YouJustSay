@@ -6,6 +6,8 @@ import Observation
     private(set) var loaded = false
     private(set) var loading = false
     private(set) var error: String?
+    var onAuthorizationBegin: (() -> Void)?
+    var onAuthorizationEnd: (() -> Void)?
     private var dirty = false
     private var loadTask: Task<Void, Never>?
     private var debounce: Task<Void, Never>?
@@ -22,12 +24,16 @@ import Observation
         self.write = write
     }
 
+    nonisolated static func normalized(_ value: String) -> String {
+        value.components(separatedBy: .whitespacesAndNewlines).joined()
+    }
+
     func load() {
         guard !loading, !loaded else { return }
         loading = true
         loadTask = Task {
             defer { loading = false }
-            do { values = try await read(false); loaded = true; error = nil }
+            do { values = try await read(false).mapValues(Self.normalized); loaded = true; error = nil }
             catch { self.error = "keychainLocked" }
         }
     }
@@ -40,12 +46,14 @@ import Observation
             return
         }
         loading = true
-        defer { loading = false }
-        do { values = try await read(true); loaded = true; error = nil }
+        onAuthorizationBegin?()
+        defer { loading = false; onAuthorizationEnd?() }
+        do { values = try await read(true).mapValues(Self.normalized); loaded = true; error = nil }
         catch { self.error = "keychainLocked" }
     }
 
     func set(_ value: String, for account: String) {
+        let value = Self.normalized(value)
         guard loaded, !loading, values[account] != value else { return }
         values[account] = value
         dirty = true
@@ -63,8 +71,10 @@ import Observation
         if let writer { await writer.value; return !dirty }
         guard loaded, dirty else { return !dirty }
         let task = Task {
+            onAuthorizationBegin?()
+            defer { onAuthorizationEnd?() }
             while dirty {
-                let snapshot = values.mapValues { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                let snapshot = values.mapValues(Self.normalized)
                 dirty = false
                 do { try await write(snapshot); error = nil }
                 catch { dirty = true; self.error = "credentialSyncFailed"; break }

@@ -41,6 +41,10 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 0) {
                 VStack(alignment: .leading, spacing: 7) {
                     Text(preferences.t(pageTitle)).font(.system(size: 25, weight: .semibold))
+                    if monitor.disabledAfterTimeout {
+                        Label(preferences.t("shortcutPaused"), systemImage: "exclamationmark.circle")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
                 }
                 .padding(.horizontal, 30).padding(.top, 28).padding(.bottom, 24)
                 Group {
@@ -183,29 +187,46 @@ struct SettingsView: View {
     }
     private var models: some View {
         VStack(spacing: 0) {
-            settingsForm(disabled: preferences.loadingCredentials) {
+            settingsForm() {
                 settingsSection("speech") {
-                    settingsRow(preferences.t("provider")) { Text(preferences.t("doubao")).foregroundStyle(.secondary) }
-                    settingsRow(preferences.t("auth")) {
-                        SettingsPicker(preferences.t("auth"), selection: $preferences.legacyAuth, options: [false, true]) { preferences.t($0 ? "legacy" : "modern") }
+                    settingsRow(preferences.t("provider")) {
+                        SettingsPicker(preferences.t("provider"), selection: $preferences.speechProvider, options: SpeechProvider.allCases) { preferences.t($0.rawValue) }
                     }
-                    Group {
-                        if preferences.legacyAuth {
-                            settingsRow("App ID") { TextField("App ID", text: $preferences.appID) }
-                            settingsRow("Access Token") {
-                                SecureField("Access Token", text: $preferences.accessToken)
-                                speechTestButton
+                    if preferences.speechProvider == .openai {
+                        settingsRow(preferences.t("apiKey")) {
+                            CredentialField(preferences.t("apiKey"), text: $preferences.openAISpeechKey)
+                                .disabled(preferences.loadingCredentials)
+                            speechTestButton
+                        }
+                    } else {
+                        settingsRow(preferences.t("auth")) {
+                            SettingsPicker(preferences.t("auth"), selection: $preferences.legacyAuth, options: [false, true]) { preferences.t($0 ? "legacy" : "modern") }
+                        }
+                        Group {
+                            if preferences.legacyAuth {
+                                settingsRow("App ID") { TextField("App ID", text: $preferences.appID).disabled(preferences.loadingCredentials) }
+                                settingsRow("Access Token") {
+                                    CredentialField("Access Token", text: $preferences.accessToken)
+                                        .disabled(preferences.loadingCredentials)
+                                    speechTestButton
+                                }
+                            } else {
+                                settingsRow(preferences.t("speechKey")) {
+                                    CredentialField(preferences.t("speechKey"), text: $preferences.doubaoKey)
+                                        .disabled(preferences.loadingCredentials)
+                                    speechTestButton
+                                }
                             }
-                        } else {
-                            settingsRow(preferences.t("speechKey")) {
-                                SecureField(preferences.t("speechKey"), text: $preferences.doubaoKey)
-                                speechTestButton
-                            }
+                        }
+                    }
+                    settingsRow(preferences.t("model")) {
+                        SettingsPicker(preferences.t("model"), selection: $preferences.speechModel, options: preferences.speechProvider.models) {
+                            preferences.speechProvider.modelLabel($0, language: preferences.language)
                         }
                     }
                     testResult(speechTest)
                     settingsRow(preferences.t("recognitionLanguage")) {
-                        SettingsPicker(preferences.t("recognitionLanguage"), selection: $preferences.recognitionLanguage, options: RecognitionLanguage.allCases) { $0.name(in: preferences.language) }
+                        SettingsPicker(preferences.t("recognitionLanguage"), selection: $preferences.recognitionLanguage, options: preferences.availableRecognitionLanguages) { $0.name(in: preferences.language, provider: preferences.speechProvider) }
                     }
                     settingsRow(preferences.t("chinesePreference")) {
                         SettingsPicker(preferences.t("chinesePreference"), selection: $preferences.chinesePreference, options: ChinesePreference.allCases) { preferences.t($0.rawValue) }
@@ -217,16 +238,22 @@ struct SettingsView: View {
                         SettingsPicker(preferences.t("provider"), selection: $preferences.provider, options: TextProvider.allCases) { preferences.t($0.rawValue) }
                     }
                     settingsRow(preferences.t(preferences.provider == .ark ? "arkKey" : "apiKey")) {
-                        SecureField(preferences.t(preferences.provider == .ark ? "arkKey" : "apiKey"), text: $preferences.modelKey)
+                        CredentialField(preferences.t(preferences.provider == .ark ? "arkKey" : "apiKey"), text: $preferences.modelKey)
+                            .disabled(preferences.loadingCredentials)
                         Button(preferences.t(textTest.running ? "testingAPI" : "testAPI")) {
                             let configuration = preferences.textConfiguration
                             textTest.start { try await ProviderClient().testText(configuration: configuration) }
-                        }.disabled(textTest.running || preferences.modelKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                        }.disabled(preferences.loadingCredentials || textTest.running || preferences.modelKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || preferences.model.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     }
                     testResult(textTest)
-                    if preferences.provider == .ark {
+                    if preferences.provider != .custom {
                         settingsRow(preferences.t("model")) {
-                            Text(TextProvider.ark.defaultModel).font(.caption).textSelection(.enabled)
+                            SettingsPicker(preferences.t("model"), selection: $preferences.textModelChoice, options: preferences.provider.presetModels + [TextProvider.customModelChoice]) {
+                                $0 == TextProvider.customModelChoice ? preferences.t("customModel") : $0
+                            }
+                        }
+                        if preferences.textModelChoice == TextProvider.customModelChoice {
+                            settingsRow(preferences.t("customModel")) { TextField("Model ID", text: $preferences.model) }
                         }
                     } else {
                         settingsRow(preferences.t("model")) { TextField(preferences.t("model"), text: $preferences.model) }
@@ -250,15 +277,16 @@ struct SettingsView: View {
             }
         }
         .task { await preferences.credentials.authorizeIfNeeded() }
-        .onChange(of: [preferences.doubaoKey, preferences.appID, preferences.accessToken, String(preferences.legacyAuth)]) { speechTest.reset() }
+        .onChange(of: [preferences.doubaoKey, preferences.appID, preferences.accessToken, String(preferences.legacyAuth), preferences.openAISpeechKey, preferences.speechProvider.rawValue, preferences.openAISpeechModel, preferences.recognitionLanguage.rawValue]) { speechTest.reset() }
         .onChange(of: [preferences.modelKey, preferences.provider.rawValue, preferences.model, preferences.customURL]) { textTest.reset() }
         .onDisappear { speechTest.reset(); textTest.reset() }
     }
     private var speechTestButton: some View {
         Button(preferences.t(speechTest.running ? "testingAPI" : "testAPI")) {
-            let credentials = SpeechCredentials(key: preferences.doubaoKey, appID: preferences.appID, token: preferences.accessToken, legacy: preferences.legacyAuth)
-            speechTest.start { try await ProviderClient().testSpeech(credentials: credentials) }
-        }.disabled(speechTest.running || !preferences.speechReady)
+            let configuration = preferences.speechConfiguration
+            let language = preferences.recognitionLanguage
+            speechTest.start { try await ProviderClient().testSpeech(configuration: configuration, language: language) }
+        }.disabled(preferences.loadingCredentials || speechTest.running || !preferences.speechReady)
     }
     @ViewBuilder private func testResult(_ test: APIConnectionTest) -> some View {
         if let result = test.result {
