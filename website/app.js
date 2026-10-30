@@ -1,8 +1,8 @@
 'use strict';
 const screenshots = {
-  cleanup: { file: 'cleanup-detail.jpg', title: '文字整理 · 正式版实拍', alt: '正式版文字整理设置实拍：启用文字润色、方舟模型及高度结构化风格', width: 1120, height: 640 },
-  interaction: { file: 'interaction-detail.jpg', title: '按键交互 · 正式版实拍', alt: '正式版按键交互设置实拍：Fn 语音输入、Fn + 空格整理选中文字、统一上屏方式', width: 1120, height: 860 },
-  models: { file: 'models-detail.jpg', title: '语音识别 · 正式版实拍', alt: '正式版语音识别设置实拍：豆包语音、密钥类型、识别语言和中文输出偏好', width: 1120, height: 570 }
+  cleanup: { file: 'cleanup-detail.jpg', title: '文字整理 · 1.0.5 界面', alt: '1.0.5 文字整理设置：启用文字润色、方舟模型及高度结构化风格', width: 1120, height: 640 },
+  interaction: { file: 'interaction-detail.jpg', title: '按键交互 · 1.0.5 界面', alt: '1.0.5 按键交互设置：Fn 语音输入、Fn + 空格整理选中文字、统一上屏方式', width: 1120, height: 860 },
+  models: { file: 'models-detail.jpg', title: '语音识别 · 1.0.5 界面', alt: '1.0.5 语音识别设置：豆包语音、密钥类型、识别语言和中文输出偏好', width: 1120, height: 570 }
 };
 const tabs = Array.from(document.querySelectorAll('[data-shot]'));
 function selectScreenshot(tab) {
