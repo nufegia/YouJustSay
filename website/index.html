@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#087f78">
   <title>你就说 YouJustSay — 想说的，直接变成写好的。</title>
-  <meta name="description" content="1.0.10 新增 OpenAI。语音识别与文字整理独立选择服务、模型和密钥，保留豆包与方舟。免费开源的 Mac 语音输入工具，自备 API 密钥，按量付费。">
+  <meta name="description" content="1.0.12 新增 Google Gemini：一份 API Key，录音转文字与文本整理都能用。默认 Flash-Lite，支持与 OpenAI、豆包自由搭配。免费开源的 Mac 语音输入工具，自备 API 密钥，按量付费。">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:title" content="你就说 — 想说的，直接变成写好的。">
-  <meta property="og:description" content="免费开源的 macOS 语音输入工具。随口说，随心记。无应用订阅，需自备 API 密钥。">
+  <meta property="og:description" content="新增 Google Gemini。录音转文字、文本整理共用一份 Key，默认轻量 Flash-Lite。免费开源的 Mac 语音输入工具，自备 API 密钥。">
   <meta property="og:url" content="https://nufegia.github.io/YouJustSay/">
   <meta property="og:image" content="https://nufegia.github.io/YouJustSay/assets/app-icon.png?v=1.0.8">
   <link rel="canonical" href="https://nufegia.github.io/YouJustSay/">
   <link rel="icon" type="image/png" href="assets/app-icon.png?v=1.0.8">
-  <link rel="stylesheet" href="styles.css?v=20261030-110">
-  <script src="app.js?v=20261030-110" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20261116-112">
+  <script src="app.js?v=20261116-112" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -37,15 +37,15 @@
   <main id="main">
     <section class="hero wrap" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <a class="release-pill" href="#new"><span>1.0.10</span> 新增 OpenAI，模型自由搭配 <b aria-hidden="true">↗</b></a>
+        <a class="release-pill" href="#new"><span>1.0.12</span> Gemini 来了，一份 Key 就够 <b aria-hidden="true">↗</b></a>
         <h1 id="hero-title">想说的，<br><span>直接变成写好的。</span></h1>
-        <p class="lead">OpenAI 或豆包，听懂你的话。<br>整理用哪个模型，也由你决定。<br>按 Fn 说完，文字就到光标处。</p>
+        <p class="lead">OpenAI、Gemini 或豆包，听你说。<br>整理用哪个模型，也由你决定。<br>按 Fn 说完，文字就到光标处。</p>
         <div class="hero-actions">
           <a class="button" href="https://github.com/nufegia/YouJustSay/releases/latest"><svg class="icon"><use href="#download"/></svg>下载 Mac 版</a>
           <button class="button button-secondary" id="play-flow" type="button">看它怎么输入 <span aria-hidden="true">↗</span></button>
         </div>
         <p class="compatibility">macOS 14+ · Apple 芯片 · 自备 API 密钥</p>
-        <p class="release-trust">1.0.10 · 已完成 Apple Developer ID 签名与苹果公证</p>
+        <p class="release-trust">1.0.12 · 已完成 Apple Developer ID 签名与苹果公证</p>
       </div>
       <div class="voice-story" id="voice-story">
         <div class="spoken-line"><span class="story-label">你随口说</span><p>“嗯，突然想去海边，<br>什么也不安排，就走走。”</p></div>
@@ -60,14 +60,14 @@
       </div>
     </section>
     <section class="new-release wrap" id="new" aria-labelledby="new-title">
-      <div class="release-intro"><p class="eyebrow">NEW IN 1.0.10</p><h2 id="new-title">声音与文字，<br>各有你的选择。</h2><p>语音识别与文字整理，分开选，也能混搭。<br>沿用熟悉的豆包与方舟，或试试 OpenAI。</p><a href="https://github.com/nufegia/YouJustSay/releases/tag/v1.0.10">看看这次更新 <span aria-hidden="true">↗</span></a></div>
+      <div class="release-intro"><p class="eyebrow">NEW IN 1.0.12</p><h2 id="new-title">Gemini 也来了。<br>从听你说，到帮你写。</h2><p>一份 Gemini API Key，连接录音转文字与文本整理。<br>默认轻量 Flash-Lite，也能与熟悉的服务自由搭配。</p><a href="https://github.com/nufegia/YouJustSay/releases/tag/v1.0.12">看看这次更新 <span aria-hidden="true">↗</span></a></div>
       <div class="choice-flow" aria-label="服务搭配示意">
-        <div class="choice-stage"><span class="choice-number">01</span><div><p class="choice-label">听你说 · 语音识别</p><h3>OpenAI <span>或</span> 豆包语音</h3><p>独立的语音密钥，识别语言按服务选择。</p></div></div>
+        <div class="choice-stage"><span class="choice-number">01</span><div><p class="choice-label">听你说 · 语音识别</p><h3>Gemini 录音转文字</h3><p>说完再识别，自动判断语言。<br>也可选择 OpenAI 或豆包语音。</p></div></div>
         <div class="choice-connector"><span aria-hidden="true">↓</span><span>停止录音后识别</span></div>
-        <div class="choice-stage"><span class="choice-number">02</span><div><p class="choice-label">帮你写 · 文字整理</p><h3>OpenAI <span>或</span> 火山方舟</h3><p>预设模型或自定义 ID，使用独立的文字密钥。<br>也支持自定义兼容服务，整理可以关闭。</p></div></div>
-        <p class="choice-footnote">搭配示意 · 例如豆包识别 + OpenAI 整理</p>
+        <div class="choice-stage"><span class="choice-number">02</span><div><p class="choice-label">帮你写 · 文字整理</p><h3>Flash-Lite，轻量整理</h3><p>Gemini 默认使用 3.5 Flash-Lite。<br>也可选择其他 Gemini 模型、OpenAI、火山方舟或自定义服务。</p></div></div>
+        <p class="choice-footnote">搭配示意 · Gemini 识别 + Flash-Lite 整理，也能跨服务混搭</p>
       </div>
-      <div class="release-details"><div><strong>两套密钥，各自管理</strong><span>语音和文字服务独立配置。</span></div><div><strong>模型随你，不必重配</strong><span>切换预设，保留自定义模型。</span></div><div><strong>熟悉的使用习惯</strong><span>旧版升级保留原有服务选择。</span></div></div>
+      <div class="release-details"><div><strong>一份 Gemini Key，两处共用</strong><span>填一次，即可用于识别与整理。</span></div><div><strong>轻量优先，模型随你</strong><span>默认 Flash-Lite，也可选更强模型。</span></div><div><strong>熟悉的使用习惯</strong><span>旧版升级保留原有服务选择。</span></div></div>
     </section>
     <section class="benefits wrap" aria-label="核心优势">
       <div><svg class="benefit-icon"><use href="#heart"/></svg><div><h2>免费开源</h2><p>代码公开，自由使用。</p></div></div>
@@ -117,7 +117,7 @@
         </figure>
       </div>
       <div class="feature-notes">
-        <article><h3>服务自己选，费用看用量。</h3><p>OpenAI 或豆包识别语音，OpenAI、方舟或自定义兼容服务整理文字。应用不收订阅费，API 服务由你配置、按量付费。</p></article>
+        <article><h3>服务自己选，费用看用量。</h3><p>OpenAI、Gemini 或豆包识别语音，OpenAI、Gemini、方舟或自定义兼容服务整理文字。应用不收订阅费，API 服务由你配置、按量付费。</p></article>
         <article><h3>为 Mac 而做，随叫随到。</h3><p>Fn 开始或结束，Fn + 空格整理选中文字，Esc 取消。自动粘贴或模拟键入替换原选区；仅复制保留原文。</p></article>
       </div>
     </section>
@@ -125,7 +125,7 @@
       <h2 id="start-title">第一次配好，<br class="mobile-only">以后开口就好。</h2>
       <ol class="steps">
         <li><span class="step-number" aria-hidden="true">01</span><h3>下载并安装</h3><p>将应用拖入「应用程序」，按提示授权麦克风和辅助功能。</p><a href="https://github.com/nufegia/YouJustSay/blob/main/docs/INSTALL.zh-CN.md">查看安装指南 <span aria-hidden="true">↗</span></a></li>
-        <li><span class="step-number" aria-hidden="true">02</span><h3>配置你的密钥</h3><p>选择 OpenAI 或豆包识别语音；需要整理时，另选模型和密钥。两项分别点击「测试」验证。</p><a href="https://github.com/nufegia/YouJustSay#支持的服务商">了解支持的服务 <span aria-hidden="true">↗</span></a></li>
+        <li><span class="step-number" aria-hidden="true">02</span><h3>配置你的密钥</h3><p>选择语音识别与文字整理服务。两项都用 Gemini 时，共用一份 API Key；分别点击「测试」验证。</p><a href="https://github.com/nufegia/YouJustSay#支持的服务商">了解支持的服务 <span aria-hidden="true">↗</span></a></li>
         <li><span class="step-number" aria-hidden="true">03</span><h3>按 Fn，开始说</h3><p>按一下开始，再按一下结束；也能选择按住说话。让文字落在想输入的地方。</p></li>
       </ol>
     </section>
@@ -133,8 +133,9 @@
       <h2 id="faq-title">你可能还想知道</h2>
       <div class="faq-list">
         <details><summary>真的免费吗？</summary><p>你就说采用 MIT 开源许可证，应用免费，没有应用订阅费。语音识别和文字整理使用你自己的 API 密钥，所选服务商会按使用量计费；免费应用不代表 API 免费。</p></details>
-        <details><summary>需要配置什么？</summary><p>需要一台运行 macOS 14 或更新系统的 Apple 芯片 Mac，以及 OpenAI 或豆包语音服务的 API 密钥。文字整理可选：可独立配置 OpenAI、方舟或自定义兼容服务。语音与文字使用独立密钥，不使用 ChatGPT 订阅登录。无需注册你就说账号。</p></details>
-        <details><summary>会边说边显示文字吗？</summary><p>当前版本在停止录音后识别，再按需整理并输入。边说边显示文字仍在计划中，尚未提供。</p></details>
+        <details><summary>需要配置什么？</summary><p>需要一台运行 macOS 14 或更新系统的 Apple 芯片 Mac，以及所选 OpenAI、Gemini 或豆包语音服务的 API 密钥。文字整理可独立选择 OpenAI、Gemini、方舟或自定义兼容服务。Gemini 识别和整理共用一份 Key；OpenAI 两项独立配置。不使用聊天产品的订阅登录。无需注册你就说账号。</p></details>
+        <details><summary>Gemini 可以选哪些整理模型？</summary><p>默认使用轻量的 Gemini 3.5 Flash-Lite，另有 3.8 Flash、4 Hydrogen、4 Argon、4 Carbon，也支持自定义模型 ID。想减少整理等待，可以先试 Flash-Lite；实际耗时取决于网络、文本长度与服务响应。已有用户升级后保留原来的模型选择。</p></details>
+        <details><summary>会边说边显示文字吗？</summary><p>当前版本在停止录音后识别，再按需整理并输入。不提供实时识别，也不计划加入边说边显示文字。</p></details>
         <details><summary>已经写好的文字，也能整理吗？</summary><p>可以。在可编辑文本框中选中文字，按 Fn + 空格，使用配置的整理服务和风格整理。即使关闭录音自动整理，这个快捷键仍然可用。可在「按键交互」中修改快捷键；自动粘贴或模拟键入会替换选区，仅复制则保留原文。请保持输入框和选区不变；目标应用需要支持辅助功能读取选区。</p></details>
         <details><summary>语音和文字会发到哪里？</summary><p>音频发送至配置的语音识别服务；开启录音整理时，识别文本会发送至所选整理服务；使用「整理选中文本」时，选中文字会发送至同一整理服务。密钥保存在本机钥匙串，应用不保存文字历史，临时录音正常结束后删除。这是云端识别工具，并非离线识别。</p></details>
         <details><summary>安装后能直接打开吗？</summary><p>从 1.0.7 起，应用已使用 Apple 颁发的 Developer ID 证书签名，并通过苹果公证。下载 DMG，拖入「应用程序」后即可正常打开，首次运行仍需确认打开并授权麦克风和辅助功能。公证是苹果的安全检查，不代表上架 Mac App Store。详细步骤见<a href="https://github.com/nufegia/YouJustSay/blob/main/docs/INSTALL.zh-CN.md">安装指南</a>。</p></details>
