@@ -16,6 +16,8 @@ enum Language: String, CaseIterable, Identifiable, Codable {
     static let strings: [String: [String]] = [
         "accessibilityRepairManual": ["Automatic reset did not complete. System Settings and this app in Finder are open. Remove the old entry with −, then drag this app into Accessibility and enable it. Return here afterward; reopen the app if needed.", "自动重置未完成。已打开系统设置并在访达定位当前应用。请用 − 移除旧条目，将此应用拖入辅助功能列表并开启，然后返回这里；必要时退出并重新打开应用。", "自動重置未完成。已開啟系統設定並在 Finder 定位目前 App。請用 − 移除舊項目，將此 App 拖入輔助使用列表並開啟，然後回到這裡；必要時結束並重新開啟 App。"],
         "doubaoFlashModel": ["Doubao file recognition · Flash", "豆包录音文件识别极速版", "豆包錄音檔案辨識極速版"],
+        "geminiAudioSize": ["Gemini 录音文件需小于 70 MB。", "Gemini 錄音檔案需小於 70 MB。", "Gemini recordings must be smaller than 70 MB."],
+        "gemini": ["Google Gemini", "Google Gemini", "Google Gemini"],
         "openai": ["OpenAI", "OpenAI", "OpenAI"],
         "customModel": ["Other model…", "其他模型…", "其他模型…"],
         "invalidSpeechModel": ["Select a supported file transcription model.", "请选择支持的录音文件识别模型。", "請選擇支援的錄音檔案辨識模型。"],

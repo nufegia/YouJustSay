@@ -192,7 +192,13 @@ struct SettingsView: View {
                     settingsRow(preferences.t("provider")) {
                         SettingsPicker(preferences.t("provider"), selection: $preferences.speechProvider, options: SpeechProvider.allCases) { preferences.t($0.rawValue) }
                     }
-                    if preferences.speechProvider == .openai {
+                    if preferences.speechProvider == .gemini {
+                        settingsRow(preferences.t("apiKey")) {
+                            CredentialField(preferences.t("apiKey"), text: $preferences.geminiKey)
+                                .disabled(preferences.loadingCredentials)
+                            speechTestButton
+                        }
+                    } else if preferences.speechProvider == .openai {
                         settingsRow(preferences.t("apiKey")) {
                             CredentialField(preferences.t("apiKey"), text: $preferences.openAISpeechKey)
                                 .disabled(preferences.loadingCredentials)
@@ -277,7 +283,7 @@ struct SettingsView: View {
             }
         }
         .task { await preferences.credentials.authorizeIfNeeded() }
-        .onChange(of: [preferences.doubaoKey, preferences.appID, preferences.accessToken, String(preferences.legacyAuth), preferences.openAISpeechKey, preferences.speechProvider.rawValue, preferences.openAISpeechModel, preferences.recognitionLanguage.rawValue]) { speechTest.reset() }
+        .onChange(of: [preferences.geminiKey, preferences.doubaoKey, preferences.appID, preferences.accessToken, String(preferences.legacyAuth), preferences.openAISpeechKey, preferences.speechProvider.rawValue, preferences.openAISpeechModel, preferences.recognitionLanguage.rawValue]) { speechTest.reset() }
         .onChange(of: [preferences.modelKey, preferences.provider.rawValue, preferences.model, preferences.customURL]) { textTest.reset() }
         .onDisappear { speechTest.reset(); textTest.reset() }
     }

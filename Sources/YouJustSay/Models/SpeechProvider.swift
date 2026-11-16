@@ -1,14 +1,15 @@
 import Foundation
 
 enum SpeechProvider: String, CaseIterable, Identifiable, Sendable {
-    case openai, doubao
+    case openai, gemini, doubao
     var id: String { rawValue }
-    var models: [String] { self == .openai ? OpenAIModels.speech : [DoubaoSpeechModel.resourceID] }
+    var models: [String] { self == .gemini ? ["gemini-3.5-transcribe"] : (self == .openai ? OpenAIModels.speech : [DoubaoSpeechModel.resourceID]) }
     func modelLabel(_ model: String, language: Language) -> String {
         self == .doubao ? language.text("doubaoFlashModel") : model
     }
     func languages(model: String) -> [RecognitionLanguage] {
         switch self {
+        case .gemini: return [.automatic]
         case .doubao: return RecognitionLanguage.allCases
         case .openai: return model == "gpt-transcribe" ? Self.transcribeLanguageHints : [.automatic]
         }

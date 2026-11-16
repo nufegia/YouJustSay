@@ -9,7 +9,7 @@ enum SettingsTab: Hashable {
 @MainActor @Observable final class Preferences {
     var settingsTab = SettingsTab.general
     var speechLanguages: [String: String] { didSet { defaults.set(speechLanguages, forKey: "speechLanguages") } }
-    private var speechLanguageProfile: String { speechProvider == .doubao ? "doubao" : "openai/" + openAISpeechModel }
+    private var speechLanguageProfile: String { speechProvider == .doubao ? "doubao" : speechProvider.rawValue + "/" + speechModel }
     var availableRecognitionLanguages: [RecognitionLanguage] { speechProvider.languages(model: openAISpeechModel) }
     var recognitionLanguage: RecognitionLanguage {
         get {
@@ -35,13 +35,17 @@ enum SettingsTab: Hashable {
         get { credentials.values["openaiSpeech"] ?? "" }
         set { credentials.set(newValue, for: "openaiSpeech") }
     }
+    var geminiKey: String {
+        get { credentials.values["gemini"] ?? "" }
+        set { credentials.set(newValue, for: "gemini") }
+    }
     var speechModel: String {
-        get { speechProvider == .openai ? openAISpeechModel : DoubaoSpeechModel.resourceID }
+        get { speechProvider == .gemini ? "gemini-3.5-transcribe" : (speechProvider == .openai ? openAISpeechModel : DoubaoSpeechModel.resourceID) }
         set { if speechProvider == .openai { openAISpeechModel = newValue } }
     }
     var speechConfiguration: SpeechConfiguration {
         SpeechConfiguration(provider: speechProvider,
-            credentials: SpeechCredentials(key: speechProvider == .openai ? openAISpeechKey : doubaoKey,
+            credentials: SpeechCredentials(key: speechProvider == .gemini ? geminiKey : (speechProvider == .openai ? openAISpeechKey : doubaoKey),
                 appID: appID, token: accessToken, legacy: legacyAuth), model: speechModel)
     }
     var textModelChoice: String {
@@ -131,6 +135,7 @@ enum SettingsTab: Hashable {
     }
     func t(_ key: String) -> String { language.text(key) }
     var speechReady: Bool {
+        if speechProvider == .gemini { return !geminiKey.isEmpty }
         if speechProvider == .openai { return !openAISpeechKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && OpenAIModels.speech.contains(openAISpeechModel) }
         return legacyAuth ? !appID.isEmpty && !accessToken.isEmpty : !doubaoKey.isEmpty
     }

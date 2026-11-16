@@ -25,6 +25,12 @@ struct ProviderClient: Sendable {
         _ = try await transcribe(audio: Self.testAudio(), configuration: configuration, language: language)
     }
     func transcribe(audio: Data, configuration: SpeechConfiguration, language: RecognitionLanguage = .automatic) async throws -> String {
+        if configuration.provider == .gemini {
+            let request = try GeminiClient.speechRequest(audio: audio, key: configuration.credentials.key, model: configuration.model)
+            let (data, response) = try await session.data(for: request)
+            _ = try Self.validate(response, provider: "Gemini")
+            return try GeminiClient.decode(data)
+        }
         if configuration.provider == .doubao {
             return try await transcribe(audio: audio, credentials: configuration.credentials, language: language)
         }
@@ -67,6 +73,7 @@ struct ProviderClient: Sendable {
         return result
     }
     static func textRequest(text: String, style: WritingStyle, configuration: TextConfiguration) throws -> URLRequest {
+        if configuration.provider == .gemini { return try GeminiClient.textRequest(text: text, style: style, configuration: configuration) }
         var request = URLRequest(url: try configuration.endpoint())
         request.httpMethod = "POST"
         request.timeoutInterval = 120
@@ -95,7 +102,7 @@ struct ProviderClient: Sendable {
     func organize(text: String, style: WritingStyle, configuration: TextConfiguration) async throws -> String {
         let (data, response) = try await session.data(for: Self.textRequest(text: text, style: style, configuration: configuration))
         _ = try Self.validate(response, provider: configuration.provider.rawValue)
-        let result = try configuration.provider == .openai ? OpenAIClient.decodeText(data) : Self.decodeText(data)
+        let result = try configuration.provider == .gemini ? GeminiClient.decode(data) : (configuration.provider == .openai ? OpenAIClient.decodeText(data) : Self.decodeText(data))
         return DictationEditing.result(result, source: text)
     }
     static func decodeText(_ data: Data) throws -> String {

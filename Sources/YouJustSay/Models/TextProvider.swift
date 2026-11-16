@@ -1,7 +1,7 @@
 import Foundation
 
 enum TextProvider: String, CaseIterable, Identifiable {
-    case openai, ark, custom
+    case openai, gemini, ark, custom
     static let customModelChoice = "__custom__"
     var id: String { rawValue }
     var presetModels: [String] {
@@ -9,10 +9,11 @@ enum TextProvider: String, CaseIterable, Identifiable {
         case .openai: OpenAIModels.text
         case .ark: [defaultModel]
         case .custom: []
+        case .gemini: ["gemini-4-hydrogen", "gemini-4-argon", "gemini-4-carbon", "gemini-3.8-flash", "gemini-3.5-flash-lite"]
         }
     }
-    var defaultModel: String { switch self { case .ark: "doubao-seed-2-1-lite-260915"; case .openai: "gpt-6.1-terra"; case .custom: "" } }
-    var baseURL: String { switch self { case .ark: "https://ark.cn-beijing.volces.com/api/v3"; case .openai: "https://api.openai.com/v1"; case .custom: "" } }
+    var defaultModel: String { switch self { case .gemini: "gemini-3.5-flash-lite"; case .ark: "doubao-seed-2-1-lite-260915"; case .openai: "gpt-6.1-terra"; case .custom: "" } }
+    var baseURL: String { switch self { case .gemini: "https://generativelanguage.googleapis.com/v1beta"; case .ark: "https://ark.cn-beijing.volces.com/api/v3"; case .openai: "https://api.openai.com/v1"; case .custom: "" } }
 }
 struct TextConfiguration: Sendable {
     let provider: TextProvider
