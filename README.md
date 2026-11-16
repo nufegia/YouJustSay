@@ -41,17 +41,17 @@
 
 应用免费开源，无需注册应用账号；语音识别与文字整理使用你自己的 API 密钥，费用由服务商按使用量收取。
 
-## 1.0.10：声音与文字，各有你的选择
+## 1.0.13：Gemini 来了，识别语言也能自己选
 
-**新增 OpenAI，保留豆包与方舟。语音识别、文字整理，服务和模型分别选。**
+**一份 Gemini API Key，录音转文字与文本整理都能用。**
 
-- **独立配置**：语音与文字使用各自的 API Key，可以混搭，例如豆包识别 + OpenAI 整理。
-- **模型自由选择**：OpenAI 与方舟文字整理均支持预设和自定义模型 ID；切换后保留自定义配置。
-- **升级照旧顺手**：旧用户保留原有服务，新安装默认 OpenAI；优化密钥输入、菜单状态与授权流程，快捷键被系统暂停时给出提示。
+- **识别语言可选**：Gemini 3.5 Transcribe 默认自动识别，也可手动选择官方支持的 83 个语言/地区；所选语言会作为提示实际传入接口，并按供应方和模型独立保存。
+- **轻量整理**：Gemini 文本整理默认使用 3.5 Flash-Lite，也提供 3.8 Flash、4 Hydrogen、4 Argon、4 Carbon 和自定义模型 ID。已有用户升级后保留原有模型选择。
+- **自由搭配**：OpenAI、Gemini、豆包／火山方舟，识别与整理分开选。Gemini 两项共用 Key，OpenAI 两项分别配置 Key。
 
-[下载 1.0.10](https://github.com/nufegia/YouJustSay/releases/tag/v1.0.10) · [完整更新说明](docs/releases/1.0.10.md)
+[下载 1.0.13](https://github.com/nufegia/YouJustSay/releases/tag/v1.0.13) · [完整更新说明](docs/RELEASE-1.0.13.zh-CN.md)
 
-当前为停止录音后识别；边说边显示文字仍在计划中。应用免费，API 费用由所选服务商收取。
+停止录音后识别，再按需整理并输入。不提供实时识别，也不计划加入边说边显示文字。应用免费，API 费用由所选服务商收取。
 
 ## 为什么选择你就说
 
@@ -62,10 +62,10 @@
 | **偶尔用，也不想每月付订阅费** | 应用免费开源，不收订阅费；识别和整理使用自己的 API 密钥，服务费用按量计算。 |
 | **输入法已经用顺手了** | 保留五笔、RIME 等现有输入法，需要时按 Fn 说话；支持自动粘贴、直接键入或仅复制。 |
 | **想让口语变清楚，又想保留自己的表达** | 基础整理、轻度润色、高度结构化三种风格可选，也能关闭整理，直接使用识别结果。 |
-| **想自己选择文字整理模型** | 内置 OpenAI、方舟及自定义兼容接口；预设与自定义模型均可选择，语音和文字分别配置密钥。 |
+| **想自己选择文字整理模型** | 内置 OpenAI、Gemini、方舟及自定义兼容接口；预设与自定义模型均可选择，Gemini 识别与整理共用 Key。 |
 | **喜欢 Mac 上简单、顺手的工具** | 原生 macOS 界面，浅色／深色浮条；Fn 开始或结束、按住说话、Esc 取消，专注口述输入。 |
 
-首次使用选择豆包语音或 OpenAI 并填写对应密钥；启用文字整理时，再配置整理服务。适合愿意花几分钟配置、希望自己掌握服务选择和用量的人。
+首次使用选择 OpenAI、Gemini 或豆包语音并填写对应密钥；启用文字整理时，再选择整理服务。两项都使用 Gemini 时，共用一份 Key。适合愿意花几分钟配置、希望自己掌握服务选择和用量的人。
 
 ## 界面预览
 
@@ -83,7 +83,7 @@
 
 ### 自带模型密钥
 
-语音识别可选豆包或 OpenAI；文字整理可选方舟、OpenAI 或自定义兼容接口。下方为旧版界面参考，新版已加入独立模型与密钥配置。
+语音识别可选 OpenAI、Gemini 或豆包；文字整理可选 OpenAI、Gemini、火山方舟或自定义兼容接口。下方为旧版界面参考，Gemini 配置与语言选择见下文。
 
 <img src="docs/screenshots/models.png" alt="模型配置：语音识别、语言与密钥测试" width="816" />
 
@@ -106,15 +106,17 @@
 | 用途 | 服务商 | 配置 |
 | --- | --- | --- |
 | 语音识别 | OpenAI | `gpt-transcribe`，停止录音后识别；独立语音 API Key。 |
+| 语音识别 | Google Gemini | `gemini-3.5-transcribe`；自动或手动选择 83 个语言/地区，与 Gemini 文字整理共用 Key。 |
 | 语音识别 | [火山·豆包语音](https://www.volcengine.com/docs/6561/1631584?lang=zh) | 录音文件极速版；API 密钥或 App ID + Access Token。 |
 | 文字整理 | OpenAI | Responses API；预设或自定义模型，独立文字 API Key。 |
+| 文字整理 | Google Gemini | 默认 `gemini-3.5-flash-lite`，可选其他预设或自定义模型；与 Gemini 语音识别共用 Key。 |
 | 文字整理 | [火山·方舟](https://docs.volcengine.com/docs/ark?lang=zh) | 方舟 API 密钥，默认豆包模型，也可填写自定义模型或接入点 ID。 |
 | 文字整理 | [深度求索（DeepSeek）](https://api-docs.deepseek.com/)等 OpenAI 兼容服务 | 选择「自定义」，填写 HTTPS 接口地址、模型和密钥，使用兼容的 Chat Completions 模型。 |
 
 ## 开始使用
 
 1. 打开 `YouJustSay.app`，授权麦克风和辅助功能。
-2. 选择豆包或 OpenAI 语音并填写密钥；启用整理时配置方舟、OpenAI 或自定义服务。分别点击「测试」验证。
+2. 选择 OpenAI、Gemini 或豆包语音并填写密钥；启用整理时选择 OpenAI、Gemini、火山方舟或自定义服务。两项都使用 Gemini 时只需填写一份 Key，分别点击「测试」验证。
 3. 按 Fn 说话，再按 Fn 结束，文字输入到所选位置。
 4. 在可编辑文本框中选中文字，按 `Fn + 空格` 使用「整理选中文本」，整理结果遵循「按键交互」中的上屏方式：自动粘贴或模拟键入会覆盖原选区，仅复制则保留原文并将结果复制到剪贴板。此功能使用模型配置中的整理服务和风格，即使关闭录音自动整理也能使用。
 
@@ -149,4 +151,15 @@ swift test
 - 两项可混搭，例如豆包识别 + OpenAI 润色。OpenAI 语音和文本测试分别产生 API 用量；ChatGPT 登录凭据不能作为 API Key 使用。
 - 本地测试验证请求格式、解析、配置持久化和已有服务回归；真实识别质量、账户权限、额度及网络连通性需填入自己的 Key 后测试。
 
-计划中的「边说边显示文字」及验收步骤见 [OpenAI 接入与后续计划](docs/OPENAI.md)。
+接口实现与验收步骤见 [OpenAI 接入说明](docs/OPENAI.md)。
+
+
+### Gemini API 设置
+
+在「模型配置」中选择 Google Gemini。语音识别和文本整理共用一份 Gemini API Key，修改任意一处会同步，密钥保存在本机钥匙串中。
+
+- **语音识别**：使用 `gemini-3.5-transcribe`，停止录音后上传 WAV，原始录音文件需小于 70 MB。默认「自动」，也可选择官方支持的 83 个语言/地区；普通话使用 `cmn-Hans-CN`，粤语使用 `yue-Hant-HK`。手动选择通过 `language_codes` 传入，自动模式发送空数组。
+- **文本整理**：默认 `gemini-3.5-flash-lite`；另有 `gemini-3.8-flash`、`gemini-4-hydrogen`、`gemini-4-argon`、`gemini-4-carbon`，也支持自定义模型 ID。预设展示不代表账户一定有权限，实际耗时取决于网络、文本长度和服务响应。
+- **搭配与测试**：可使用 Gemini 识别 + OpenAI 整理，或豆包识别 + Gemini 整理。语音和文本分别点击「测试」，测试会产生 API 用量。使用 Gemini API Key，不使用 Gemini 聊天产品的订阅登录。
+
+更多说明见 [Gemini 接入](docs/GEMINI.zh-CN.md)；语言清单参考 [Google 官方转写文档](https://ai.google.dev/gemini-api/docs/transcribe#supported-languages)。
