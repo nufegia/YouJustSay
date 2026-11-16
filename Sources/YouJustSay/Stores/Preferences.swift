@@ -10,7 +10,7 @@ enum SettingsTab: Hashable {
     var settingsTab = SettingsTab.general
     var speechLanguages: [String: String] { didSet { defaults.set(speechLanguages, forKey: "speechLanguages") } }
     private var speechLanguageProfile: String { speechProvider == .doubao ? "doubao" : speechProvider.rawValue + "/" + speechModel }
-    var availableRecognitionLanguages: [RecognitionLanguage] { speechProvider.languages(model: openAISpeechModel) }
+    var availableRecognitionLanguages: [RecognitionLanguage] { speechProvider.languages(model: speechModel) }
     var recognitionLanguage: RecognitionLanguage {
         get {
             let selected = RecognitionLanguage(rawValue: speechLanguages[speechLanguageProfile] ?? "") ?? .automatic

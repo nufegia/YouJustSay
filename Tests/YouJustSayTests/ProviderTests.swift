@@ -65,7 +65,7 @@ final class ProviderTests: XCTestCase {
         XCTAssertEqual((json["request"] as! [String: Any])["enable_auto_lang"] as? Bool, false)
         XCTAssertTrue(Shortcut.fn.matches(flags: .maskSecondaryFn))
         XCTAssertFalse(Shortcut.fn.matches(flags: [.maskSecondaryFn, .maskCommand]))
-        XCTAssertEqual(RecognitionLanguage.allCases.count, 26)
+        XCTAssertEqual(SpeechProvider.doubao.languages(model: DoubaoSpeechModel.resourceID).count, 26)
     }
     func testProviderRoutingAndCustomRequest() throws {
         for provider in [TextProvider.ark, .custom] {

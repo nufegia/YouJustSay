@@ -26,7 +26,7 @@ struct ProviderClient: Sendable {
     }
     func transcribe(audio: Data, configuration: SpeechConfiguration, language: RecognitionLanguage = .automatic) async throws -> String {
         if configuration.provider == .gemini {
-            let request = try GeminiClient.speechRequest(audio: audio, key: configuration.credentials.key, model: configuration.model)
+            let request = try GeminiClient.speechRequest(audio: audio, key: configuration.credentials.key, model: configuration.model, language: language)
             let (data, response) = try await session.data(for: request)
             _ = try Self.validate(response, provider: "Gemini")
             return try GeminiClient.decode(data)

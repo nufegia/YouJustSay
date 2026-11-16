@@ -15,15 +15,15 @@ enum GeminiClient {
         return request
     }
 
-    static func speechRequest(audio: Data, key: String, model: String) throws -> URLRequest {
-        guard model == "gemini-3.5-transcribe" else { throw AppFailure.message("invalidEndpoint") }
+    static func speechRequest(audio: Data, key: String, model: String, language: RecognitionLanguage = .automatic) throws -> URLRequest {
+        guard model == GeminiSpeechModel.id, GeminiSpeechModel.languages.contains(language) else { throw AppFailure.message("invalidEndpoint") }
         guard !audio.isEmpty else { throw AppFailure.message("empty") }
         // Keep the base64 JSON payload below the 100 MB inline request limit.
         guard audio.count < 70_000_000 else { throw AppFailure.message("geminiAudioSize") }
         return try request(key: key, body: [
             "model": model,
             "input": [["type": "audio", "mime_type": "audio/wav", "data": audio.base64EncodedString()]],
-            "generation_config": ["transcription_config": ["mode": ["type": "verbatim"]]]
+            "generation_config": ["transcription_config": ["mode": ["type": "verbatim"], "language_codes": language == .automatic ? [] : [language.geminiCode]]]
         ])
     }
 
