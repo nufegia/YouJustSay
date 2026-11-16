@@ -15,7 +15,7 @@
   <link rel="canonical" href="https://nufegia.github.io/YouJustSay/">
   <link rel="icon" type="image/png" href="assets/app-icon.png?v=1.0.8">
   <link rel="stylesheet" href="styles.css?v=20261116-112">
-  <script src="app.js?v=20261116-112" defer></script>
+  <script src="app.js?v=20261116-113-example" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -38,7 +38,7 @@
     <section class="hero wrap" aria-labelledby="hero-title">
       <div class="hero-copy">
         <a class="release-pill" href="#new"><span>1.0.13</span> Gemini 来了，一份 Key 就够 <b aria-hidden="true">↗</b></a>
-        <h1 id="hero-title">想说的，<br><span>直接变成写好的。</span></h1>
+        <h1 id="hero-title">想到哪儿，<br>说到哪儿。<br><span>表达，帮你理顺。</span></h1>
         <p class="lead">OpenAI、Gemini 或豆包，听你说。<br>整理用哪个模型，也由你决定。<br>按 Fn 说完，文字就到光标处。</p>
         <div class="hero-actions">
           <a class="button" href="https://github.com/nufegia/YouJustSay/releases/latest"><svg class="icon"><use href="#download"/></svg>下载 Mac 版</a>
@@ -48,9 +48,9 @@
         <p class="release-trust">1.0.13 · 已完成 Apple Developer ID 签名与苹果公证</p>
       </div>
       <div class="voice-story" id="voice-story">
-        <div class="spoken-line"><span class="story-label">你随口说</span><p>“嗯，突然想去海边，<br>什么也不安排，就走走。”</p></div>
+        <div class="spoken-line"><span class="story-label">你随口说</span><p>“周六想去海边，早上八点出发吧，哦不，九点，太早起不来。带上相机，还有那个充电宝。要是下雨就不去了，改在家看电影。”</p></div>
         <div class="native-bar-stage"><img id="flow-bar" src="assets/bars/recording-light.png" alt="应用真实录音浮条" width="498" height="156"><span id="flow-status" role="status">按 Fn 说话，再按一次结束</span></div>
-        <div class="output-paper"><div class="output-heading"><span class="story-label">你正在输入的地方</span><label class="cleanup-toggle"><input type="checkbox" id="flow-cleanup" checked><span>整理口语</span></label></div><p id="flow-output">突然想去海边。什么也不安排，就走走。</p></div>
+        <div class="output-paper"><div class="output-heading"><span class="story-label">你正在输入的地方</span><label class="cleanup-toggle"><input type="checkbox" id="flow-cleanup" checked><span>整理口语</span></label></div><p id="flow-output">周六想去海边，早上九点出发，带上相机和充电宝。如果下雨，就改在家看电影。</p></div>
         <div class="flow-steps" role="group" aria-label="输入过程示意">
           <button type="button" data-step="0" aria-pressed="false"><span>01</span> 开口说</button>
           <button type="button" data-step="1" aria-pressed="false"><span>02</span> 按需整理</button>

@@ -64,8 +64,8 @@ const flowOutput = document.querySelector('#flow-output');
 const cleanup = document.querySelector('#flow-cleanup');
 const play = document.querySelector('#play-flow');
 const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const rawWords = '嗯，突然想去海边，什么也不安排，就走走。';
-const cleanWords = '突然想去海边。什么也不安排，就走走。';
+const rawWords = '周六想去海边，早上八点出发吧，哦不，九点，太早起不来。带上相机，还有那个充电宝。要是下雨就不去了，改在家看电影。';
+const cleanWords = '周六想去海边，早上九点出发，带上相机和充电宝。如果下雨，就改在家看电影。';
 let flowTimer;
 function selectStep(step) {
   const states = ['recording', cleanup.checked ? 'polishing' : 'transcribing', 'completed'];
